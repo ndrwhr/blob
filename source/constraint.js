@@ -1,37 +1,44 @@
 
-var Constraint = function(canvas, p1, p2, rl){
-	this.canvas = canvas;
-	this.p1 = p1;
-	this.p2 = p2;
-	this.rest_length = Math.max(rl || p1.getCurrent().subtract(p2.getCurrent()).length(), 0.01);
-	this.squared_rest_length = this.rest_length * this.rest_length;
+var Constraint = function(point1, point2, min, max){
+    this.point1 = point1;
+    this.point2 = point2;
+
+    this.rest_length = Math.max(vec2.dist(point1.current, point2.current), point1.radius + point2.radius);
+    this.squared_rest_length = this.rest_length * this.rest_length;
 };
 
 Constraint.prototype = {
-	draw: function(){
-		this.canvas.ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-		this.canvas.ctx.lineWidth = 1;
-		this.canvas.line(this.p1.getCurrent(), this.p2.getCurrent());
-	},
+    draw: function(context){
+        var width = context.canvas.width;
+        var height = context.canvas.height;
 
-	satisfy: function(){
-		var p1 = this.p1.getCurrent();
-		var p2 = this.p2.getCurrent();
-		var delta = p2.subtract(p1);
+        context.strokeStyle = 'rgba(0,0,0,0.1)';
+        context.lineWidth = 1;
 
-		var p1_im = this.p1.inv_mass;
-		var p2_im = this.p2.inv_mass;
+        context.beginPath();
+        context.moveTo(this.point1.current[0] * width, this.point1.current[1] * height);
+        context.lineTo(this.point2.current[0] * width, this.point2.current[1] * height);
+        context.stroke();
+    },
 
-		var d = delta.squaredLength();
+    satisfy: function(dt){
+        var point1 = this.point1.current;
+        var point2 = this.point2.current;
+        var delta = vec2.subtract(point2, point1, vec2.create());
 
-		var diff = (d - this.squared_rest_length) / ((this.squared_rest_length + d) * (p1_im + p2_im));
+        var point1_im = this.point1.inv_mass;
+        var point2_im = this.point2.inv_mass;
 
-		if (p1_im != 0){
-			this.p1.setCurrent(p1.add(delta.multiply(p1_im * diff)));
-		}
+        var d = (delta[0]*delta[0] + delta[1]*delta[1]);
 
-		if (p2_im != 0){
-			this.p2.setCurrent( p2.subtract(delta.multiply(p2_im*diff)) );
-		}
-	}
+        var diff = (d - this.squared_rest_length) / ((this.squared_rest_length + d) * (point1_im + point2_im));
+
+        if (point1_im !== 0){
+            vec2.add(point1, vec2.scale(delta, point1_im * diff, vec2.create()), this.point1.current);
+        }
+
+        if (point2_im != 0){
+            vec2.subtract(point2, vec2.scale(delta, point2_im * diff, vec2.create()), this.point2.current);
+        }
+    }
 };

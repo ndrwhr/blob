@@ -1,67 +1,58 @@
 
-var Point = function(canvas, x, y){
-	this.canvas = canvas;
-	this.current = this.previous = new FastVector(x, y);
+var Point = function(x, y, radius, mass){
+    var position = vec2.createFrom(x, y);
 
-	this.mass = this.inv_mass = 1;
+    this.current = position;
+    this.previous = position;
 
-	this.force = new FastVector(0.0,0.0) || new FastVector(0.0,0.5).multiply(0.05 * 0.05);
-	this.radius = 3;
+    this.radius = radius;
+    this.mass = mass;
+
+    this.mass = this.inv_mass = 1;
+
+    this.force = vec2.createFrom(0.0, 0.0);
+
+    this.dampening = 0.01;
 };
 
 Point.prototype = {
+    move: function(dt){
+        if (this.inv_mass === 0) return;
 
-	setCurrent: function(p) {
-		this.current = p;
-	},
+        var current = vec2.scale(this.current, 2 - this.dampening, vec2.create());
+        var previous = vec2.scale(this.previous, 1 - this.dampening, vec2.create());
+        var newCurrent = vec2.subtract(current, previous, vec2.create());
 
-	setPrevious: function(p) {
-		this.previous = p;
-	},
+        vec2.add(this.force, newCurrent);
 
-	getCurrent: function() {
-		return this.current;
-	},
+        this.previous = this.current;
+        this.current = newCurrent;
+    },
 
-	getPrevious: function() {
-		return this.previous;
-	},
+    draw: function(context) {
+        var p = this.current;
+        x = p[0] * context.canvas.width;
+        y = p[1] * context.canvas.height;
 
-	move: function() {
-		if (this.inv_mass!=0){
-			var new_pos = this.current.multiply(1.99).subtract(this.previous.multiply(0.99)).add(this.force);
-			new_pos.x = (new_pos.x < 0) ? 0 : ((new_pos.x > 1) ? 1 : new_pos.x);
-			new_pos.y = (new_pos.y < 0) ? 0 : ((new_pos.y > 1) ? 1 : new_pos.y);
-			this.previous = this.current;
-			this.current = new_pos;
-		}
-	},
+        context.strokeStyle = 'black';
 
-	draw: function() {
-		var p = this.current;
-		x = p.x * this.canvas.width;
-		y = p.y * this.canvas.height;
+        context.fillStyle = 'white';
+        context.beginPath();
+        context.moveTo(x + 15, y);
+        context.arc(x, y, 15, 0, Math.PI * 2, false);
+        context.fill();
+        context.fillStyle = 'black';
 
-		this.canvas.ctx.strokeStyle = 'black';
+        context.lineWidth = 1;
+        context.beginPath();
+        context.moveTo(x + 15, y);
+        context.arc(x, y, 15, 0, Math.PI * 2, false);
+        context.stroke();
+        context.lineWidth = 0.3;
 
-		this.canvas.ctx.fillStyle = 'white';
-		this.canvas.ctx.beginPath();
-		this.canvas.ctx.moveTo(x + 15, y);
-		this.canvas.ctx.arc(x, y, 15, 0, Math.PI * 2, false);
-		this.canvas.ctx.fill();
-		this.canvas.ctx.fillStyle = 'black';
-
-		this.canvas.ctx.lineWidth = 1;
-		this.canvas.ctx.beginPath();
-		this.canvas.ctx.moveTo(x + 15, y);
-		this.canvas.ctx.arc(x, y, 15, 0, Math.PI * 2, false);
-		this.canvas.ctx.stroke();
-		this.canvas.ctx.lineWidth = 0.3;
-
-		this.canvas.ctx.beginPath();
-		this.canvas.ctx.moveTo(x + 15, y + 5);
-		this.canvas.ctx.arc(x, y + 5, 9, 0, Math.PI * 2, false);
-		this.canvas.ctx.fill();
-	}
-
+        context.beginPath();
+        context.moveTo(x + 15, y + 5);
+        context.arc(x, y + 5, 9, 0, Math.PI * 2, false);
+        context.fill();
+    }
 };

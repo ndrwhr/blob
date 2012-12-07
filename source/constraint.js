@@ -1,10 +1,13 @@
 
-var Constraint = function(point1, point2, min, max){
-    this.point1 = point1;
-    this.point2 = point2;
+var Constraint = function(options){
+    this.points_ = options.points;
 
-    this.rest_length = Math.max(vec2.dist(point1.current, point2.current), point1.radius + point2.radius);
-    this.squared_rest_length = this.rest_length * this.rest_length;
+    this.k_ = options.k || 0.75;
+
+    var dist = vec2.dist(options.points[0].current, options.points[1].current);
+    dist = Math.min(Math.max(dist, options.points[0].radius + options.points[1].radius), 0.5);
+    this.restLength_ = dist;
+    this.squaredRestLength_ = this.restLength_ * this.restLength_;
 };
 
 Constraint.prototype = {
@@ -16,29 +19,21 @@ Constraint.prototype = {
         context.lineWidth = 1;
 
         context.beginPath();
-        context.moveTo(this.point1.current[0] * width, this.point1.current[1] * height);
-        context.lineTo(this.point2.current[0] * width, this.point2.current[1] * height);
+        context.moveTo(this.points_[0].current[0] * width, this.points_[0].current[1] * height);
+        context.lineTo(this.points_[1].current[0] * width, this.points_[1].current[1] * height);
         context.stroke();
     },
 
     satisfy: function(dt){
-        var point1 = this.point1.current;
-        var point2 = this.point2.current;
-        var delta = vec2.subtract(point2, point1, vec2.create());
+        var between = vec2.create();
+        vec2.subtract(this.points_[0].current, this.points_[1].current, between);
 
-        var point1_im = this.point1.inv_mass;
-        var point2_im = this.point2.inv_mass;
+        var force = this.k_ * (this.restLength_ - vec2.length(between));
 
-        var d = (delta[0]*delta[0] + delta[1]*delta[1]);
+        var direction = vec2.normalize(between, vec2.create());
+        this.points_[0].addForce(vec2.scale(direction, force / 2, vec2.create()));
+        this.points_[1].addForce(vec2.scale(direction, -force / 2, vec2.create()));
 
-        var diff = (d - this.squared_rest_length) / ((this.squared_rest_length + d) * (point1_im + point2_im));
-
-        if (point1_im !== 0){
-            vec2.add(point1, vec2.scale(delta, point1_im * diff, vec2.create()), this.point1.current);
-        }
-
-        if (point2_im != 0){
-            vec2.subtract(point2, vec2.scale(delta, point2_im * diff, vec2.create()), this.point2.current);
-        }
+        return;
     }
 };

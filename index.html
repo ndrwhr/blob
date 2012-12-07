@@ -58,7 +58,12 @@ var radius = 0.03;
 var mass = 0.01;
 var points = [];
 for (var i = 0; i < numPoints; i++){
-    points.push(new Point(Math.random(), Math.random(), radius, mass));
+    points.push(new Point({
+        x: Math.random(),
+        y: Math.random(),
+        radius: radius,
+        mass: mass
+    }));
 }
 
 points.sort(function(p1, p2){
@@ -84,7 +89,9 @@ matrix.forEach(function(row, index1){
         // Remove this value so we don't use it again.
         row[index2] = matrix[index2][index1] = Infinity;
 
-        constraints.push(new Constraint(points[index1], points[index2]));
+        constraints.push(new Constraint({
+            points: [points[index1], points[index2]]
+        }));
     }
 });
 
@@ -119,13 +126,13 @@ var mouseMove = function(evt){
 
 document.body.addEventListener('mousedown', function(evt){
     closest = getClosestPoint(eventToFastVector(evt));
-    closest.inv_mass = 0;
+    closest.invMass = 0;
     previousEvt = evt;
     document.body.addEventListener('mousemove', mouseMove);
 });
 
 document.body.addEventListener('mouseup', function(){
-    closest.inv_mass = 1;
+    closest.invMass = 1 / closest.mass;
     closest = null;
     document.body.removeEventListener('mousemove', mouseMove);
 });
@@ -137,18 +144,17 @@ colors = colors.split(',').map(function(color){
 
 document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
-
 (function step(){
     var dt = 16;
 
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    points.forEach(function(point){
-        point.move(dt);
-    });
-
     constraints.forEach(function(constraint){
         constraint.satisfy(dt);
+    });
+
+    points.forEach(function(point){
+        point.move(dt);
     });
 
     constraints.forEach(function(constraint){

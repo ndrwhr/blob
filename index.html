@@ -26,17 +26,24 @@
 <body>
 <script type="text/javascript">
 
+var world = new World();
+var blob = new Blob({
+    world: world
+});
+
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 
-document.body.appendChild(canvas);
+window.addEventListener('resize', function(){
+    world.setSize();
 
-var world = new World({});
-var blob = new Blob({
-    world: world
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
 });
+
+document.body.appendChild(canvas);
 
 (function step(){
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -45,7 +52,8 @@ var blob = new Blob({
 
     world.draw(context);
 
-    blob.draw(context);
+    // Disabled to view debug drawing.
+    // blob.draw(context);
 
     requestAnimationFrame(step);
     // setTimeout(step, 100);

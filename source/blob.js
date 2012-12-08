@@ -20,22 +20,22 @@ Blob.prototype = {
     },
 
     createEye_: function(){
-        var x = Math.random();
-        var y = Math.random();
+        var x = Math.random() * this.world_.width;
+        var y = Math.random() * this.world_.height;
 
         var scleraPoint = this.world_.addPoint({
-            x: y,
-            y: x,
+            x: x,
+            y: y,
             radius: Eye.SCLERA_RADIUS,
             mass: Eye.SCLERA_MASS
         });
 
         var pupilPoint = this.world_.addPoint({
-            x: y,
-            y: x,
+            x: x,
+            y: y,
             radius: Eye.PUPIL_RADIUS,
             mass: Eye.PUPIL_MASS,
-            defaultForce: vec2.createFrom(0, 0.0001),
+            defaultForce: vec2.createFrom(0, 0.005),
             dampening: 0.1
         });
 
@@ -44,12 +44,13 @@ Blob.prototype = {
                 scleraPoint,
                 pupilPoint
             ],
-            max: 0.0055
+            max: Eye.SCLERA_RADIUS - Eye.PUPIL_RADIUS - Eye.EDGE_SPACE
         });
 
         var eye = new Eye({
             pupilPoint: pupilPoint,
-            scleraPoint: scleraPoint
+            scleraPoint: scleraPoint,
+            world: this.world_
         });
 
         return eye;
@@ -104,6 +105,7 @@ Blob.prototype = {
         this.closestEye_ = this.getClosestPoint_(this.eventToVec2_(evt));
         this.closestEye_.scleraPoint.invMass = 0;
         this.previousEvt_ = evt;
+        this.mouseMove_(evt);
         document.body.addEventListener('mousemove', this.mouseMove_);
     },
 
@@ -135,7 +137,9 @@ Blob.prototype = {
     },
 
     eventToVec2_: function(evt){
-        return vec2.createFrom(evt.pageX / window.innerWidth, evt.pageY / window.innerHeight);
+        var x = (evt.pageX / window.innerWidth) * this.world_.width;
+        var y = (evt.pageY / window.innerHeight) * this.world_.height;
+        return vec2.createFrom(x, y);
     }
 };
 

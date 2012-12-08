@@ -1,6 +1,7 @@
 
 var Constraint = function(options){
     this.points_ = options.points;
+    this.world_ = options.world;
 
     if (options.max === undefined){
         this.k_ = options.k || 0.5;
@@ -19,15 +20,15 @@ var Constraint = function(options){
 
 Constraint.prototype = {
     draw: function(context){
-        var width = context.canvas.width;
-        var height = context.canvas.height;
+        var p1 = this.world_.pointToPixels(this.points_[0]);
+        var p2 = this.world_.pointToPixels(this.points_[1]);
 
-        context.strokeStyle = 'black';
-        context.lineWidth = 0.2;
+        context.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+        context.lineWidth = 1;
 
         context.beginPath();
-        context.moveTo(this.points_[0].current[0] * width, this.points_[0].current[1] * height);
-        context.lineTo(this.points_[1].current[0] * width, this.points_[1].current[1] * height);
+        context.moveTo(p1[0], p1[1]);
+        context.lineTo(p2[0], p2[1]);
         context.stroke();
     },
 

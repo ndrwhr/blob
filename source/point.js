@@ -14,6 +14,8 @@ var Point = function(options){
     this.force = vec2.createFrom(0.0, 0.0);
 
     this.dampening = options.dampening || 0.075;
+
+    this.world_ = options.world;
 };
 
 Point.prototype = {
@@ -48,17 +50,14 @@ Point.prototype = {
     },
 
     draw: function(context){
-        var p = this.current;
-        x = p[0] * context.canvas.width;
-        y = p[1] * context.canvas.height;
-
-        var radius = (1000 * this.radius);
+        var p = this.world_.pointToPixels(this);
+        var radius = this.world_.valueToPixels(this.radius);
 
         context.strokeStyle = 'black';
         context.lineWidth = 1;
         context.beginPath();
-        context.moveTo(x + radius, y);
-        context.arc(x, y, radius, 0, Math.PI * 2, false);
+        context.moveTo(p[0] + radius, p[1]);
+        context.arc(p[0], p[1], radius, 0, Math.PI * 2, false);
         context.stroke();
     }
 };

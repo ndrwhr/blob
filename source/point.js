@@ -10,6 +10,7 @@ var Point = function(options){
 
     this.invMass = 1 / options.mass;
 
+    this.defaultForce = options.defaultForce;
     this.force = vec2.createFrom(0.0, 0.0);
 
     this.dampening = options.dampening || 0.075;
@@ -25,6 +26,8 @@ Point.prototype = {
             this.force = vec2.create();
             return;
         }
+
+        if (this.defaultForce) this.addForce(this.defaultForce);
 
         var temp = vec2.create(this.current);
 
@@ -44,30 +47,18 @@ Point.prototype = {
         this.force = vec2.create();
     },
 
-    draw: function(context) {
+    draw: function(context){
         var p = this.current;
         x = p[0] * context.canvas.width;
         y = p[1] * context.canvas.height;
 
+        var radius = (1000 * this.radius);
+
         context.strokeStyle = 'black';
-
-        context.fillStyle = 'white';
-        context.beginPath();
-        context.moveTo(x + 15, y);
-        context.arc(x, y, 15, 0, Math.PI * 2, false);
-        context.fill();
-        context.fillStyle = 'black';
-
         context.lineWidth = 1;
         context.beginPath();
-        context.moveTo(x + 15, y);
-        context.arc(x, y, 15, 0, Math.PI * 2, false);
+        context.moveTo(x + radius, y);
+        context.arc(x, y, radius, 0, Math.PI * 2, false);
         context.stroke();
-        context.lineWidth = 0.3;
-
-        context.beginPath();
-        context.moveTo(x + 15, y + 5);
-        context.arc(x, y + 5, 9, 0, Math.PI * 2, false);
-        context.fill();
     }
 };

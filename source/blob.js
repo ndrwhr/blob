@@ -27,7 +27,9 @@ Blob.prototype = {
             x: x,
             y: y,
             radius: Eye.SCLERA_RADIUS,
-            mass: Eye.SCLERA_MASS
+            mass: Eye.SCLERA_MASS,
+            interactive: true,
+            dampening: 0.05
         });
 
         var pupilPoint = this.world_.addPoint({
@@ -35,11 +37,12 @@ Blob.prototype = {
             y: y,
             radius: Eye.PUPIL_RADIUS,
             mass: Eye.PUPIL_MASS,
-            defaultForce: vec2.createFrom(0, 0.005),
-            dampening: 0.1
+            defaultForce: vec2.createFrom(0, 0.003),
+            dampening: 0.0001
         });
 
         this.world_.addConstraint({
+            type: Constraint.FIXED,
             points: [
                 scleraPoint,
                 pupilPoint
@@ -75,7 +78,9 @@ Blob.prototype = {
         matrix.forEach(function(row, index1){
             if (index1 === Blob.MAX_EYES - 1) return;
 
-            var connections = Math.floor(Math.random() * 1) + 2;
+            var connections = Math.floor(Math.random() * 2) + 2;
+            var point1 = this.eyes_[index1].scleraPoint;
+            var point2;
 
             while(connections > 0){
                 connections--;
@@ -86,11 +91,16 @@ Blob.prototype = {
                 // Remove this value so we don't use it again.
                 row[index2] = matrix[index2][index1] = Infinity;
 
+                point2 = this.eyes_[index2].scleraPoint;
+
                 this.world_.addConstraint({
+                    type: Constraint.SPRING,
                     points: [
-                        this.eyes_[index1].scleraPoint,
-                        this.eyes_[index2].scleraPoint
-                    ]
+                        point1,
+                        point2
+                    ],
+                    min: point1.radius + point2.radius,
+                    k: 0.5
                 });
             }
         }, this);

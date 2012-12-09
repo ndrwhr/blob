@@ -12,6 +12,11 @@
     }
     body {
         overflow: hidden;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
     }
     </style>
 
@@ -53,7 +58,7 @@ document.body.appendChild(canvas);
     world.draw(context);
 
     // Disabled to view debug drawing.
-    // blob.draw(context);
+    blob.draw(context);
 
     requestAnimationFrame(step);
     // setTimeout(step, 100);

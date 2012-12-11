@@ -5,8 +5,10 @@
 var World = function(){
     this.gravity = vec2.createFrom(0, 0);
 
-    this.points_ = [];
     this.constraints_ = [];
+
+    this.interactivePoints_ = [];
+    this.nonInteractivePoints_ = [];
 
     this.setSize();
 };
@@ -34,12 +36,20 @@ World.prototype = {
     gravity: null,
 
     /**
-     * An array that contains all of the points in the system.
+     * An array that contains all of the points in the system that interact with everything.
      *
      * @type {Point[]}
      * @private
      */
-    points_: null,
+    interactivePoints_: null,
+
+    /**
+     * An array that contains all of the points in the system that do not interact with anything.
+     *
+     * @type {Point[]}
+     * @private
+     */
+    nonInteractivePoints_: null,
 
     /**
      * An array that contains all of the constraints in the system.
@@ -96,7 +106,10 @@ World.prototype = {
     addPoint: function(options){
         options.world = this;
         var point = new Point(options);
-        this.points_.push(point);
+
+        if (options.interactive) this.interactivePoints_.push(point);
+        else this.nonInteractivePoints_.push(point);
+
         return point;
     },
 
@@ -123,11 +136,9 @@ World.prototype = {
     interact: function(point){
         var i, l, point2;
 
-        for (i = 0, l = this.points_.length; i < l; i++){
-            point2 = this.points_[i];
-            if (point !== point2 && point2.interactive){
-                this.collidePoints_(point, point2);
-            }
+        for (i = 0, l = this.interactivePoints_.length; i < l; i++){
+            point2 = this.interactivePoints_[i];
+            if (point !== point2) this.collidePoints_(point, point2);
         }
 
         // Collide with the edges of the system.
@@ -151,8 +162,11 @@ World.prototype = {
         for (i = 0, l = this.constraints_.length; i < l; i++)
             this.constraints_[i].satisfy(World.DT);
 
-        for (i = 0, l = this.points_.length; i < l; i++)
-            this.points_[i].move(World.DT);
+        for (i = 0, l = this.interactivePoints_.length; i < l; i++)
+            this.interactivePoints_[i].move(World.DT);
+
+        for (i = 0, l = this.nonInteractivePoints_.length; i < l; i++)
+            this.nonInteractivePoints_[i].move(World.DT);
     },
 
     /**
@@ -160,11 +174,9 @@ World.prototype = {
      * @param {CanvasRenderingContext2D} context The context to be drawn into.
      */
     draw: function(context){
-        for (i = 0, l = this.constraints_.length; i < l; i++)
+        for (i = 0, l = this.constraints_.length; i < l; i++){
             this.constraints_[i].draw(context);
-
-        for (i = 0, l = this.points_.length; i < l; i++)
-            this.points_[i].draw(context);
+        }
     },
 
     /**
@@ -174,8 +186,8 @@ World.prototype = {
      *
      * @return {vec2} The point's current position converted to pixels.
      */
-    pointToPixels: function(point){
-        return vec2.multiply(point.current, this.scale_, vec2.create());
+    toPixelsVec: function(vec){
+        return vec2.multiply(vec, this.scale_, vec2.create());
     },
 
     /**
@@ -185,7 +197,7 @@ World.prototype = {
      *
      * @return {number} The value converted to pixels.
      */
-    valueToPixels: function(value){
+    toPixelsValue: function(value){
         return value * this.maxScale_;
     },
 

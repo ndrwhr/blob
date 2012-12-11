@@ -150,8 +150,8 @@ Point.prototype = {
      * @param {CanvasRenderingContext2D} context The context to be drawn into.
      */
     draw: function(context){
-        var p = this.world_.pointToPixels(this);
-        var radius = this.world_.valueToPixels(this.radius);
+        var p = this.world_.toPixelsVec(this.current);
+        var radius = this.world_.toPixelsValue(this.radius);
 
         context.strokeStyle = 'black';
         context.lineWidth = 1;

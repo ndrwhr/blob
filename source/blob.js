@@ -5,6 +5,7 @@ var Blob = function (options){
     this.mouseMove_ = this.mouseMove_.bind(this);
 
     this.eyes_ = [];
+    this.scleraPoints_ = [];
     for(var i = 0; i < Blob.MAX_EYES; i++)
         this.eyes_.push(this.createEye_());
 
@@ -15,13 +16,74 @@ var Blob = function (options){
 
 Blob.prototype = {
     draw: function(context){
+        this.drawHull_(context);
+
         for(var i = 0; i < Blob.MAX_EYES; i++)
             this.eyes_[i].draw(context);
     },
 
+    getConvexHull_: function(points){
+        var i, l;
+
+        // Compute the cross product between OA and OB.
+        function cross(o, a, b){
+            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+        }
+
+        points.sort(function(p1, p2){
+            return (p1[0] - p2[0]) || (p1[1] - p2[1]);
+        });
+
+        var lower = [];
+        var upper = [];
+        for (i = 0, l = points.length; i < l; i++){
+            // Compute the lower hull.
+            while (lower.length >= 2 &&
+                cross(lower[lower.length - 2], lower[lower.length - 1], points[i]) <= 0){
+                lower.pop();
+            }
+            lower.push(points[i]);
+
+            // Compute the upper hull.
+            while (upper.length >= 2 &&
+                cross(upper[upper.length - 2], upper[upper.length - 1], points[l - i - 1]) <= 0){
+                upper.pop();
+            }
+            upper.push(points[l - i - 1]);
+        }
+
+        // Remove the duplicate point.
+        lower.pop();
+
+        return lower.concat(upper);
+    },
+
+    drawHull_: function(context){
+        var vectors = this.scleraPoints_.map(function(point){
+            return point.current;
+        });
+        var hullPoints = this.getConvexHull_(vectors).map(function(point){
+            return this.world_.toPixelsVec(point);
+        }, this);
+
+        context.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+        context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        context.lineWidth = 1;
+        context.beginPath();
+        context.moveTo(hullPoints[0][0], hullPoints[0][1]);
+        hullPoints.slice(1).forEach(function(point){
+            context.lineTo(point[0], point[1]);
+        }, this);
+        context.fill();
+        context.stroke();
+    },
+
     createEye_: function(){
-        var x = Math.random() * this.world_.width;
-        var y = Math.random() * this.world_.height;
+        var buffer = 0.1;
+        var x = (Math.random() * this.world_.width * (1 - buffer)) +
+            (this.world_.width * buffer / 2);
+        var y = Math.random() * (this.world_.height * (1 - buffer)) +
+            (this.world_.height * buffer / 2);
 
         var scleraPoint = this.world_.addPoint({
             x: x,
@@ -32,13 +94,15 @@ Blob.prototype = {
             dampening: 0.05
         });
 
+        this.scleraPoints_.push(scleraPoint);
+
         var pupilPoint = this.world_.addPoint({
             x: x,
             y: y,
             radius: Eye.PUPIL_RADIUS,
             mass: Eye.PUPIL_MASS,
             defaultForce: vec2.createFrom(0, 0.003),
-            dampening: 0.0001
+            dampening: 0.00001
         });
 
         this.world_.addConstraint({
@@ -99,8 +163,9 @@ Blob.prototype = {
                         point1,
                         point2
                     ],
+                    max: 3,
                     min: point1.radius + point2.radius,
-                    k: 0.5
+                    k: 0.1
                 });
             }
         }, this);
@@ -153,4 +218,4 @@ Blob.prototype = {
     }
 };
 
-Blob.MAX_EYES = 15;
+Blob.MAX_EYES = 10;

@@ -30,12 +30,15 @@ Blob.prototype = {
             return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
         }
 
+        // Sort the points horizontally then vertically.
         points.sort(function(p1, p2){
             return (p1[0] - p2[0]) || (p1[1] - p2[1]);
         });
 
+        var center = vec2.create();
         var lower = [];
         var upper = [];
+
         for (i = 0, l = points.length; i < l; i++){
             // Compute the lower hull.
             while (lower.length >= 2 &&
@@ -50,12 +53,31 @@ Blob.prototype = {
                 upper.pop();
             }
             upper.push(points[l - i - 1]);
+
+            // Add this point to the center vector.
+            vec2.add(points[i], center);
         }
 
-        // Remove the duplicate point.
+        // Scale the center vector by number of points to find the actual center.
+        vec2.scale(center, 1 / points.length);
+
+        // Remove the duplicate points.
+        upper.pop();
         lower.pop();
 
-        return lower.concat(upper);
+        // Expand the hull outward.
+        var hull = lower.concat(upper);
+        var scale = Blob.PADDING;
+        var offset = vec2.subtract(vec2.scale(center, scale, vec2.create()), center);
+        var expandedHull = [];
+        for (i = 0, l = hull.length; i < l; i++){
+            // Scale the hull point then subtract the center offset so that at the end the expanded
+            // hull encloses the original hull.
+            expandedHull.push(vec2.subtract(vec2.scale(hull[i], scale, vec2.create()), offset,
+                vec2.create()));
+        }
+
+        return expandedHull;
     },
 
     drawHull_: function(context){
@@ -66,7 +88,7 @@ Blob.prototype = {
             return this.world_.toPixelsVec(point);
         }, this);
 
-        context.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+        context.strokeStyle = 'rgba(0, 0, 0, 0.2)';
         context.fillStyle = 'rgba(255, 255, 255, 0.1)';
         context.lineWidth = 1;
         context.beginPath();
@@ -74,6 +96,7 @@ Blob.prototype = {
         hullPoints.slice(1).forEach(function(point){
             context.lineTo(point[0], point[1]);
         }, this);
+        context.lineTo(hullPoints[0][0], hullPoints[0][1]);
         context.fill();
         context.stroke();
     },
@@ -219,3 +242,4 @@ Blob.prototype = {
 };
 
 Blob.MAX_EYES = 10;
+Blob.PADDING = 1.5;

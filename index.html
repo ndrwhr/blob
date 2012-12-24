@@ -25,15 +25,30 @@
     <script type="text/javascript" src="source/point.js"></script>
     <script type="text/javascript" src="source/constraint.js"></script>
     <script type="text/javascript" src="source/world.js"></script>
+    <script type="text/javascript" src="source/spline.js"></script>
     <script type="text/javascript" src="source/eye.js"></script>
     <script type="text/javascript" src="source/blob.js"></script>
 </head>
 <body>
 <script type="text/javascript">
 
+function randomColor(){
+    var colors = [
+        'lightblue',
+        'lightcoral',
+        'lightgreen',
+        'lightpink',
+        'lightsalmon',
+        'lightseagreen',
+        'lightskyblue',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+};
+
 var world = new World();
 var blob = new Blob({
-    world: world
+    world: world,
+    color: randomColor()
 });
 
 var canvas = document.createElement('canvas');
@@ -55,26 +70,10 @@ document.body.appendChild(canvas);
 
     world.step();
 
-    world.draw(context);
-
-    // Disabled to view debug drawing.
     blob.draw(context);
 
-    requestAnimationFrame(step);
+    requestAnimationFrame(step, canvas);
     // setTimeout(step, 100);
-})();
-
-document.body.style.backgroundColor = (function(){
-    var colors = [
-        'lightblue',
-        'lightcoral',
-        'lightgreen',
-        'lightpink',
-        'lightsalmon',
-        'lightseagreen',
-        'lightskyblue',
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
 })();
 
 </script>

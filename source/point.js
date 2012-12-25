@@ -7,7 +7,7 @@
  *     - {number} mass
  *     - {number} radius
  *     - {boolean} interactive
- *     - {boolean} defaultForce
+ *     - {number} defaultForce The amount of force that should be applied by default.
  */
 var Point = function(options){
     this.current = vec2.createFrom(options.x, options.y);
@@ -20,6 +20,7 @@ var Point = function(options){
 
     this.interactive = options.interactive;
     this.defaultForce = options.defaultForce;
+    this.defaultForceDirection = vec2.createFrom(0, 1);
 
     this.force_ = vec2.createFrom(0.0, 0.0);
     this.dampening_ = options.dampening;
@@ -73,9 +74,16 @@ Point.prototype = {
     /**
      * The default force to be applied to this particle at every step.
      *
-     * @type {vec2}
+     * @type {number}
      */
     defaultForce: null,
+
+    /**
+     * The direction that the default force should be applied over.
+     *
+     * @type {vec2}
+     */
+    defaultForceDirection: null,
 
     /**
      * The accumulated force that should be applied to this point.
@@ -121,7 +129,8 @@ Point.prototype = {
         }
 
         if (this.interactive) this.addForce(this.world_.gravity);
-        if (this.defaultForce) this.addForce(this.defaultForce);
+        if (this.defaultForce) this.addForce(vec2.scale(this.defaultForceDirection,
+            this.defaultForce, vec2.create()));
 
         var temp = vec2.create(this.current);
 

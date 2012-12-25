@@ -104,7 +104,7 @@ Constraint.prototype = {
         var p1 = this.world_.toPixelsVec(this.points_[0].current);
         var p2 = this.world_.toPixelsVec(this.points_[1].current);
 
-        context.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+        context.strokeStyle = 'rgba(255, 255, 255, 0.1)';
         context.lineWidth = 1;
 
         context.beginPath();

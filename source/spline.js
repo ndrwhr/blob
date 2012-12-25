@@ -3,7 +3,6 @@ var Spline = {
         var hull = this.getHull_(points, padding);
         var curves = this.getCurves_(hull, curvature);
 
-        context.lineWidth = 2;
         context.beginPath();
         context.moveTo(curves[0].start[0], curves[0].start[1]);
         curves.forEach(function(curve){
@@ -11,7 +10,6 @@ var Spline = {
                 curve.controls[1][0], curve.controls[1][1],
                 curve.end[0], curve.end[1]);
         });
-        context.stroke();
         context.fill();
     },
 

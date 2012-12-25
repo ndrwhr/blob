@@ -23,18 +23,19 @@ Blob.prototype = {
             return this.world_.toPixelsVec(point.current);
         }, this);
 
-        context.strokeStyle = 'rgba(0, 0, 0, 0.3)';
         context.fillStyle = this.color_;
         Spline.draw(context, points, Blob.ROUNDING, Blob.PADDING);
 
         this.world_.draw(context);
 
-        for(var i = 0; i < Blob.MAX_EYES; i++)
+        for(var i = 0; i < Blob.MAX_EYES; i++){
+            if (this.mousePosition_) this.eyes_[i].lookAt(this.mousePosition_);
             this.eyes_[i].draw(context);
+        }
     },
 
     createEye_: function(){
-        var buffer = 0.4;
+        var buffer = 0.5;
         var x = (Math.random() * this.world_.width * (1 - buffer)) +
             (this.world_.width * buffer / 2);
         var y = Math.random() * (this.world_.height * (1 - buffer)) +
@@ -56,7 +57,7 @@ Blob.prototype = {
             y: y,
             radius: Eye.PUPIL_RADIUS,
             mass: Eye.PUPIL_MASS,
-            defaultForce: vec2.createFrom(0, 0.003),
+            defaultForce: 0.003,
             dampening: 0.00001
         });
 
@@ -97,7 +98,7 @@ Blob.prototype = {
         matrix.forEach(function(row, index1){
             if (index1 === Blob.MAX_EYES - 1) return;
 
-            var connections = Math.floor(Math.random() * 2) + 2;
+            var connections = Math.floor(Math.random() * 2) + 4;
             var point1 = this.eyes_[index1].scleraPoint;
             var point2;
 
@@ -119,7 +120,7 @@ Blob.prototype = {
                         point2
                     ],
                     max: 3,
-                    min: point1.radius + point2.radius,
+                    min: 2,
                     k: 0.1
                 });
             }
@@ -128,27 +129,34 @@ Blob.prototype = {
 
     initializeEvents_: function(){
         document.body.addEventListener('mousedown', this.mouseDown_.bind(this));
+        document.body.addEventListener('mousemove', this.mouseMove_.bind(this));
         document.body.addEventListener('mouseup', this.mouseUp_.bind(this));
     },
 
     mouseDown_: function(evt){
         this.closestEye_ = this.getClosestPoint_(this.eventToVec2_(evt));
+        if (!this.closestEye_) return;
         this.closestEye_.scleraPoint.invMass = 0;
         this.previousEvt_ = evt;
+        this.isMouseDown_ = true;
         this.mouseMove_(evt);
-        document.body.addEventListener('mousemove', this.mouseMove_);
     },
 
     mouseMove_: function(evt){
-        this.closestEye_.scleraPoint.current = this.eventToVec2_(evt);
-        this.closestEye_.scleraPoint.previous = this.eventToVec2_(this.previousEvt_);
-        this.previousEvt_ = evt;
+        if (this.isMouseDown_){
+            this.closestEye_.scleraPoint.current = this.eventToVec2_(evt);
+            this.closestEye_.scleraPoint.previous = this.eventToVec2_(this.previousEvt_);
+            this.previousEvt_ = evt;
+        }
+
+        this.mousePosition_ = this.eventToVec2_(evt);
     },
 
     mouseUp_: function(evt){
+        this.isMouseDown_ = false;
+        if (!this.closestEye_) return;
         this.closestEye_.scleraPoint.invMass = 1 / this.closestEye_.scleraPoint.mass;
         this.closestEye_ = null;
-        document.body.removeEventListener('mousemove', this.mouseMove_);
     },
 
     getClosestPoint_: function(pos){
@@ -157,7 +165,7 @@ Blob.prototype = {
 
         this.eyes_.forEach(function(eye, index){
             var dist = vec2.dist(pos, eye.scleraPoint.current);
-            if (dist < minDist){
+            if (dist < minDist && dist <= Eye.SCLERA_RADIUS){
                 minDist = dist;
                 closestEye = eye;
             }

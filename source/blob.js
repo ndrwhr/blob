@@ -2,36 +2,135 @@ var Blob = function (options){
     this.color_ = options.color;
     this.world_ = options.world;
 
-    // Bind this function early to help with adding and removing listeners.
-    this.mouseMove_ = this.mouseMove_.bind(this);
-
     this.eyes_ = [];
     this.scleraPoints_ = [];
     for(var i = 0; i < Blob.MAX_EYES; i++)
         this.eyes_.push(this.createEye_());
 
+    this.mouth_ = this.createMouth_();
+
     this.generateConstraints_();
-
-    this.initializeEvents_();
-
-    this.time_ = 0;
 };
 
 Blob.prototype = {
-    draw: function(context){
+    draw: function(context, debugMode){
         var points = this.scleraPoints_.map(function(point){
             return this.world_.toPixelsVec(point.current);
         }, this);
+        points.push(this.world_.toPixelsVec(this.mouth_.point.current));
+        points = Utilities.computeHull(points, Blob.PADDING);
 
-        context.fillStyle = this.color_;
-        Spline.draw(context, points, Blob.ROUNDING, Blob.PADDING);
+        if (debugMode){
+            Utilities.drawSpline({
+                context: context,
+                points: points,
+                curvature: Blob.CURVATURE,
+                fillStyle: 'rgba(225, 245, 255, 0.3)',
+                strokeStyle: 'rgba(225, 245, 255, 0.8)',
+                lineWidth: 5,
 
-        this.world_.draw(context);
-
-        for(var i = 0; i < Blob.MAX_EYES; i++){
-            if (this.mousePosition_) this.eyes_[i].lookAt(this.mousePosition_);
-            this.eyes_[i].draw(context);
+                debug: true,
+                debugFillStyle: 'rgba(255, 255, 255, 0.9)',
+                debugStrokeStyle: 'rgba(255, 255, 255, 0.8)',
+                debugLineWidth: 2,
+                knotRadius: 5,
+                controlRadius: 3
+            });
+        } else {
+            Utilities.drawSpline({
+                context: context,
+                points: points,
+                curvature: Blob.CURVATURE,
+                fillStyle: this.color_
+            });
         }
+
+        if (debugMode) this.world_.drawDebug(context);
+
+        for(var i = 0; i < Blob.MAX_EYES; i++)
+            this.eyes_[i].draw(context, debugMode);
+
+        this.mouth_.draw(context, debugMode);
+
+        // Draw the lines for each eye to the point that they're looking at.
+        if (debugMode && this.lookingAt_) this.drawFocus_(context);
+    },
+
+    /**
+     * Returns true if the users cursor is near the blob.
+     *
+     * @return {Boolean}
+     */
+    inDanger: function(){
+        if (!this.lookingAt_) return false;
+        else return vec2.dist(this.mouth_.point.current, this.lookingAt_) < 3;
+    },
+
+    /**
+     * Returns true if the blob has been grabbed by the user.
+     *
+     * @return {Boolean}
+     */
+    isComprimizied: function(){
+        return !!this.closestMember_;
+    },
+
+    /**
+     * Returns true if the blob is gandering.
+     *
+     * @return {Boolean}
+     */
+    isBored: function(){
+        return !!this.gandering_;
+    },
+
+    /**
+     * Called by the experiment when the user presses their mouse down.
+     *
+     * @param {vec2} position The position at which the user pressed their mouse.
+     */
+    mouseDown: function(position){
+        this.closestMember_ = this.getClosestMember_(position);
+
+        if (this.closestMember_){
+            this.previousUserPosition_ = position;
+            this.isMouseDown_ = true;
+            this.mouseMove(position);
+
+            document.body.classList.add('grabbed');
+        }
+    },
+
+    /**
+     * Called by the experiment when the user moves their mouse.
+     *
+     * @param {vec2} position The position of the users mouse.
+     */
+    mouseMove: function(position){
+        this.lookAt_(position);
+
+        this.ganderInterval_ = clearInterval(this.ganderInterval_);
+        this.gandering_ = false;
+
+        if (this.isMouseDown_){
+            this.closestMember_.grab(position, this.previousUserPosition_);
+            this.previousUserPosition_ = position;
+        } else {
+            this.ganderInterval_ = setInterval(this.gander_.bind(this), 3000);
+        }
+    },
+
+    /**
+     * Called by the experiment when the user lifts up on their mouse.
+     *
+     * @param {vec2} position The position where the user lifted their mouse.
+     */
+    mouseUp: function(position){
+        document.body.classList.remove('grabbed');
+
+        if (this.closestMember_) this.closestMember_.release();
+        this.closestMember_ = null;
+        this.isMouseDown_ = false;
     },
 
     createEye_: function(){
@@ -79,8 +178,28 @@ Blob.prototype = {
         return eye;
     },
 
+    createMouth_: function(){
+        var point = this.world_.addPoint({
+            x: 0.5 * this.world_.width,
+            y: 0.5 * this.world_.height,
+            radius: Mouth.RADIUS,
+            mass: Mouth.MASS,
+            interactive: true,
+            dampening: 0.03
+        });
+
+        var mouth = new Mouth({
+            point: point,
+            world: this.world_,
+            eyes: this.eyes_,
+            blob: this
+        });
+
+        return mouth;
+    },
+
     generateConstraints_: function(){
-        var i, j;
+        var i, j, l;
         var matrix = new Array(Blob.MAX_EYES);
 
         for(i = 0; i < Blob.MAX_EYES; i++)
@@ -125,62 +244,104 @@ Blob.prototype = {
                 });
             }
         }, this);
-    },
 
-    initializeEvents_: function(){
-        document.body.addEventListener('mousedown', this.mouseDown_.bind(this));
-        document.body.addEventListener('mousemove', this.mouseMove_.bind(this));
-        document.body.addEventListener('mouseup', this.mouseUp_.bind(this));
-    },
-
-    mouseDown_: function(evt){
-        this.closestEye_ = this.getClosestPoint_(this.eventToVec2_(evt));
-        if (!this.closestEye_) return;
-        this.closestEye_.scleraPoint.invMass = 0;
-        this.previousEvt_ = evt;
-        this.isMouseDown_ = true;
-        this.mouseMove_(evt);
-    },
-
-    mouseMove_: function(evt){
-        if (this.isMouseDown_){
-            this.closestEye_.scleraPoint.current = this.eventToVec2_(evt);
-            this.closestEye_.scleraPoint.previous = this.eventToVec2_(this.previousEvt_);
-            this.previousEvt_ = evt;
+        // Connect the mouth to every other eye in the blob.
+        for (i = 0, l = this.eyes_.length; i < l; i++){
+            this.world_.addConstraint({
+                type: Constraint.SPRING,
+                points: [
+                    this.mouth_.point,
+                    this.eyes_[i].scleraPoint
+                ],
+                max: Mouth.RADIUS * 5,
+                min: Mouth.RADIUS * 3,
+                k: 0.05
+            });
         }
-
-        this.mousePosition_ = this.eventToVec2_(evt);
     },
 
-    mouseUp_: function(evt){
-        this.isMouseDown_ = false;
-        if (!this.closestEye_) return;
-        this.closestEye_.scleraPoint.invMass = 1 / this.closestEye_.scleraPoint.mass;
-        this.closestEye_ = null;
+    lookAt_: function(point){
+        this.lookingAt_ = point;
+
+        for(var i = 0; i < Blob.MAX_EYES; i++)
+            this.eyes_[i].lookAt(this.lookingAt_);
     },
 
-    getClosestPoint_: function(pos){
+    gander_: function(){
+        this.gandering_ = true;
+        this.lookAt_(this.world_.getRandomVec2());
+    },
+
+    drawFocus_: function(context){
+        var lookingAt = this.world_.toPixelsVec(this.lookingAt_);
+        var length = 10;
+        context.lineWidth = 4;
+        context.strokeStyle = 'white';
+        context.beginPath();
+        context.moveTo(lookingAt[0] - length, lookingAt[1] - length);
+        context.lineTo(lookingAt[0] + length, lookingAt[1] + length);
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(lookingAt[0] - length, lookingAt[1] + length);
+        context.lineTo(lookingAt[0] + length, lookingAt[1] - length);
+        context.stroke();
+
+        context.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        context.lineWidth = 0.5;
+
+        var point;
+        for(var i = 0; i < Blob.MAX_EYES; i++){
+            point = this.world_.toPixelsVec(this.eyes_[i].scleraPoint.current);
+            context.beginPath();
+            context.moveTo(lookingAt[0], lookingAt[1]);
+            context.lineTo(point[0], point[1]);
+            context.stroke();
+        }
+    },
+
+    getClosestMember_: function(target){
         var minDist = Infinity;
-        var closestEye = null;
+        var closestMember = null;
+
+        var checkMember = function(member, point, radius){
+            var dist = vec2.dist(target, point.current);
+            if (dist < minDist && dist <= radius){
+                minDist = dist;
+                closestMember = member;
+            }
+        };
 
         this.eyes_.forEach(function(eye, index){
-            var dist = vec2.dist(pos, eye.scleraPoint.current);
-            if (dist < minDist && dist <= Eye.SCLERA_RADIUS){
-                minDist = dist;
-                closestEye = eye;
-            }
+            checkMember(eye, eye.scleraPoint, Eye.SCLERA_RADIUS);
         });
 
-        return closestEye;
-    },
+        checkMember(this.mouth_, this.mouth_.point, Mouth.RADIUS);
 
-    eventToVec2_: function(evt){
-        var x = (evt.pageX / window.innerWidth) * this.world_.width;
-        var y = (evt.pageY / window.innerHeight) * this.world_.height;
-        return vec2.createFrom(x, y);
+        return closestMember;
     }
 };
 
-Blob.MAX_EYES = 8 + Math.floor(Math.random() * 3);
+/**
+ * The maximum number of eyes the blob should have.
+ *
+ * @type {Number}
+ * @static
+ */
+Blob.MAX_EYES = 9;
+
+/**
+ * The amount of padding (in world units) between the outermost eyes and the edge of the blob.
+ *
+ * @type {Number}
+ * @static
+ */
 Blob.PADDING = 1.5;
-Blob.ROUNDING = 0.3;
+
+/**
+ * The amount of curvature the blobs outer shell should have.
+ *
+ * @type {Number}
+ * @static
+ */
+Blob.CURVATURE = 0.3;

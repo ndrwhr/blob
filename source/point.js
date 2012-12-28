@@ -151,22 +151,5 @@ Point.prototype = {
 
         // Reset the forces.
         this.force_ = vec2.create();
-    },
-
-    /**
-     * Draw a simple representation of this point.
-     *
-     * @param {CanvasRenderingContext2D} context The context to be drawn into.
-     */
-    draw: function(context){
-        var p = this.world_.toPixelsVec(this.current);
-        var radius = this.world_.toPixelsValue(this.radius);
-
-        context.strokeStyle = 'black';
-        context.lineWidth = 1;
-        context.beginPath();
-        context.moveTo(p[0] + radius, p[1]);
-        context.arc(p[0], p[1], radius, 0, Math.PI * 2, false);
-        context.stroke();
     }
 };

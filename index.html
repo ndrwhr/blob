@@ -3,83 +3,29 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <title>EEEEYYYESSS</title>
+    <title>THE BLOB</title>
 
-    <style type="text/css">
-    * {
-        margin: 0;
-        padding: 0;
-    }
-    body {
-        overflow: hidden;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
-
-    canvas {
-        background: white;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css">
 
     <script type="text/javascript" src="lib/gl-matrix-min.js"></script>
     <script type="text/javascript" src="lib/patches.js"></script>
     <script type="text/javascript" src="source/point.js"></script>
     <script type="text/javascript" src="source/constraint.js"></script>
     <script type="text/javascript" src="source/world.js"></script>
-    <script type="text/javascript" src="source/spline.js"></script>
+    <script type="text/javascript" src="source/utilities.js"></script>
+    <script type="text/javascript" src="source/mouth.js"></script>
     <script type="text/javascript" src="source/eye.js"></script>
     <script type="text/javascript" src="source/blob.js"></script>
+    <script type="text/javascript" src="source/experiment.js"></script>
 </head>
 <body>
+
+<canvas></canvas>
+<div class="control reset">↺</div>
+<div class="control debug">☢</div>
+
 <script type="text/javascript">
-
-function randomColor(){
-    var colors = [
-        'lightblue',
-        'lightcoral',
-        'lightgreen',
-        'lightpink',
-        'lightsalmon',
-        'lightseagreen',
-        'lightskyblue',
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-};
-
-var world = new World();
-var blob = new Blob({
-    world: world,
-    color: randomColor()
-});
-
-var canvas = document.createElement('canvas');
-var context = canvas.getContext('2d');
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
-
-window.addEventListener('resize', function(){
-    world.setSize();
-
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-});
-
-document.body.appendChild(canvas);
-
-(function step(){
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    world.step();
-
-    blob.draw(context);
-
-    requestAnimationFrame(step, canvas);
-    // setTimeout(step, 100);
-})();
-
+    var exp = new Experiment();
 </script>
 </body>
 </html>

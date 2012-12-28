@@ -1,19 +1,5 @@
-var Spline = {
-    draw: function(context, points, curvature, padding){
-        var hull = this.getHull_(points, padding);
-        var curves = this.getCurves_(hull, curvature);
-
-        context.beginPath();
-        context.moveTo(curves[0].start[0], curves[0].start[1]);
-        curves.forEach(function(curve){
-            context.bezierCurveTo(curve.controls[0][0], curve.controls[0][1],
-                curve.controls[1][0], curve.controls[1][1],
-                curve.end[0], curve.end[1]);
-        });
-        context.fill();
-    },
-
-    getHull_: function(points, padding){
+var Utilities = {
+    computeHull: function(points, padding){
         var i, l;
 
         // Compute the cross product between OA and OB.
@@ -72,6 +58,76 @@ var Spline = {
         }
 
         return expandedHull;
+    },
+
+    drawSpline: function(options){
+        var context = options.context;
+        var curves = this.getCurves_(options.points, options.curvature);
+
+        this.drawPath_(context, curves);
+
+        if (options.fillStyle){
+            context.fillStyle = options.fillStyle;
+            context.fill();
+        }
+
+        if (options.strokeStyle){
+            context.strokeStyle = options.strokeStyle;
+            context.lineWidth = options.lineWidth;
+            context.stroke();
+        }
+
+        if (options.debug) this.drawDebug_(options, curves);
+    },
+
+    drawDebug_: function(options, curves){
+        var context = options.context;
+
+        context.fillStyle = options.debugFillStyle;
+        context.strokeStyle = options.debugStrokeStyle;
+        context.lineWidth = options.debugLineWidth;
+
+        var i, l, curve, knot;
+        for (i = 0, l = curves.length; i < l; i++){
+            curve = curves[i];
+
+            // Draw the start knot for this curve.
+            context.fillRect(curve.start[0] - options.knotRadius,
+                curve.start[1] - options.knotRadius,
+                options.knotRadius * 2, options.knotRadius * 2);
+
+            // Draw the control points.
+            context.fillRect(curve.controls[0][0] - options.controlRadius,
+                curve.controls[0][1] - options.controlRadius,
+                options.controlRadius * 2, options.controlRadius * 2);
+
+            context.fillRect(curve.controls[1][0] - options.controlRadius,
+                curve.controls[1][1] - options.controlRadius,
+                options.controlRadius * 2, options.controlRadius * 2);
+
+            // Draw a line from the knots to their control points.
+            context.beginPath();
+            context.moveTo(curve.start[0], curve.start[1]);
+            context.lineTo(curve.controls[0][0], curve.controls[0][1]);
+            context.stroke();
+
+            context.beginPath();
+            context.moveTo(curve.end[0], curve.end[1]);
+            context.lineTo(curve.controls[1][0], curve.controls[1][1]);
+            context.stroke();
+        }
+    },
+
+    drawPath_: function(context, curves){
+        var i, l;
+
+        context.beginPath();
+        context.moveTo(curves[0].start[0], curves[0].start[1]);
+        for (i = 0, l = curves.length; i < l; i++){
+            context.bezierCurveTo(curves[i].controls[0][0], curves[i].controls[0][1],
+                curves[i].controls[1][0], curves[i].controls[1][1],
+                curves[i].end[0], curves[i].end[1]);
+        }
     },
 
     getCurves_: function(points, curvature){

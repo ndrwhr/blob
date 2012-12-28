@@ -170,12 +170,13 @@ World.prototype = {
     },
 
     /**
-     * Calls to each constraint and point in the system to draw itself.
+     * Calls to each constraint in the system to draw itself.
+     *
      * @param {CanvasRenderingContext2D} context The context to be drawn into.
      */
-    draw: function(context){
+    drawDebug: function(context){
         for (i = 0, l = this.constraints_.length; i < l; i++){
-            this.constraints_[i].draw(context);
+            this.constraints_[i].drawDebug(context);
         }
     },
 
@@ -199,6 +200,15 @@ World.prototype = {
      */
     toPixelsValue: function(value){
         return value * this.maxScale_;
+    },
+
+    /**
+     * Returns a vec2 with a random x and y within the bounds of the world.
+     *
+     * @return {vec2}
+     */
+    getRandomVec2: function(){
+        return vec2.createFrom(this.width * Math.random(), this.height * Math.random());
     },
 
     /**

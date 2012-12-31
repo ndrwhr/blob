@@ -1,9 +1,12 @@
 /**
  * A world is responsible for keeping track of all points and constraints in a system. It is also
  * in charge of moving the system ahead at every step.
+ *
+ * @param {Object} options An object literal with the following properties.
+ *     - {vec2} gravity A vector to be used as the force of gravity on every point.
  */
-var World = function(){
-    this.gravity = vec2.createFrom(0, 0);
+var World = function(options){
+    this.gravity = options.gravity;
 
     this.constraints_ = [];
 

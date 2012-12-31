@@ -8,9 +8,15 @@ var Experiment = function(){
     this.canvas_.height = window.innerHeight;
     this.canvas_.width = window.innerWidth;
 
-    this.initializeBlob_();
-    this.initializeControls_();
+    this.controls_ = new Controls({
+        gravityEl: document.querySelector('.control.gravity'),
+        debugEl: document.querySelector('.control.debug'),
+        resetEl: document.querySelector('.control.reset'),
+        experiment: this
+    });
+
     this.initializeEvents_();
+    this.reset();
 
     // Binding early so we don't have to on every animation step.
     this.animate_ = this.animate_.bind(this);
@@ -34,6 +40,14 @@ Experiment.prototype = {
      * @private
      */
     context_: null,
+
+    /**
+     * A reference to the controls for this experiment.
+     *
+     * @type {Controls}
+     * @private
+     */
+    controls_: null,
 
     /**
      * The world that should be used.
@@ -68,26 +82,11 @@ Experiment.prototype = {
     currentColor_: null,
 
     /**
-     * Whether or not the blob is rendering in debug mode.
-     *
-     * @type {Boolean}
-     * @private
-     */
-    debugMode_: null,
-
-    /**
-     * A timer id that is set when the user clicks the reset button.
-     *
-     * @type {number|null}
-     */
-    resetAnimationTimeout_: null,
-
-    /**
      * Instantiates a new blob and world.
      *
      * @private
      */
-    initializeBlob_: function(){
+    reset: function(){
         if (this.nextColor_) document.body.classList.remove(this.nextColor_);
 
         this.currentColor_ = this.nextColor_ || this.randomColor_();
@@ -95,63 +94,18 @@ Experiment.prototype = {
 
         var color = this.randomColor_();
 
-        this.world_ = new World();
+        this.currentGravity_ = vec2.create();
+
+        this.world_ = new World({
+            gravity: this.controls_.currentGravity
+        });
+
         this.blob_ = new Blob({
             world: this.world_,
             color: this.currentColor_
         });
 
         document.body.classList.add(this.nextColor_);
-    },
-
-    /**
-     * Attaches event listeners to the control buttons.
-     *
-     * @private
-     */
-    initializeControls_: function(){
-        var resetButton = document.querySelector('.control.reset');
-        resetButton.addEventListener('click', this.resetButtonClicked_.bind(this));
-
-        var debugButton = document.querySelector('.control.debug');
-        debugButton.addEventListener('click', this.toggleRenderMode_.bind(this));
-    },
-
-    /**
-     * Called when the reset button is clicked.
-     *
-     * @param {MouseEvent} evt
-     * @private
-     */
-    resetButtonClicked_: function(evt){
-        evt.preventDefault();
-
-        if (this.resetAnimationTimeout_) return;
-
-        evt.target.classList.add('animate');
-
-        this.resetAnimationTimeout_ = setTimeout(function(){
-            evt.target.classList.remove('animate');
-
-            this.resetAnimationTimeout_ = null;
-        }.bind(this), 500);
-
-        this.initializeBlob_();
-    },
-
-    /**
-     * Toggle whether or not the blob should be rendering in debug mode.
-     *
-     * @private
-     */
-    toggleRenderMode_: function(){
-        this.debugMode_ = !this.debugMode_;
-
-        if (this.debugMode_){
-            document.body.classList.add('debug-mode');
-        } else {
-            document.body.classList.remove('debug-mode');
-        }
     },
 
     /**
@@ -162,9 +116,10 @@ Experiment.prototype = {
     animate_: function(){
         this.context_.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
 
+        this.world_.gravity = this.controls_.currentGravity;
         this.world_.step();
 
-        this.blob_.draw(this.context_, this.debugMode_);
+        this.blob_.draw(this.context_, this.controls_.debugModeEnabled);
 
         requestAnimationFrame(this.animate_, this.canvas_);
     },
@@ -179,6 +134,7 @@ Experiment.prototype = {
         document.body.addEventListener('mousedown', this.mouseDown_.bind(this));
         document.body.addEventListener('mousemove', this.mouseMove_.bind(this));
         document.body.addEventListener('mouseup', this.mouseUp_.bind(this));
+        document.body.addEventListener('mouseout', this.mouseOut_.bind(this));
     },
 
     /**
@@ -200,7 +156,7 @@ Experiment.prototype = {
      */
     mouseDown_: function(evt){
         evt.preventDefault();
-        this.blob_.mouseDown(this.eventToVec2_(evt));
+        this.blob_.mouseDown(this.eventToWorldVec2_(evt));
     },
 
     /**
@@ -210,7 +166,7 @@ Experiment.prototype = {
      */
     mouseMove_: function(evt){
         evt.preventDefault();
-        this.blob_.mouseMove(this.eventToVec2_(evt));
+        this.blob_.mouseMove(this.eventToWorldVec2_(evt));
     },
 
     /**
@@ -220,7 +176,19 @@ Experiment.prototype = {
      */
     mouseUp_: function(evt){
         evt.preventDefault();
-        this.blob_.mouseUp(this.eventToVec2_(evt));
+        this.blob_.mouseUp(this.eventToWorldVec2_(evt));
+    },
+
+    /**
+     * Called when the user mouses out of the experiment. This is only really needed when the user
+     * has already pressed down and is dragging.
+     *
+     * @param {MouseEvent} evt
+     * @private
+     */
+    mouseOut_: function(evt){
+        evt.preventDefault();
+        this.mouseUp_(evt);
     },
 
     /**
@@ -231,10 +199,11 @@ Experiment.prototype = {
      * @return {vec2}
      * @private
      */
-    eventToVec2_: function(evt){
-        var x = (evt.pageX / window.innerWidth) * this.world_.width;
-        var y = (evt.pageY / window.innerHeight) * this.world_.height;
-        return vec2.createFrom(x, y);
+    eventToWorldVec2_: function(evt){
+        var scale = [this.world_.width / window.innerWidth,
+            this.world_.height / window.innerHeight];
+
+        return vec2.multiply(scale, Utilities.eventToVec2(evt));
     },
 
     /**

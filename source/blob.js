@@ -345,3 +345,11 @@ Blob.PADDING = 1.5;
  * @static
  */
 Blob.CURVATURE = 0.3;
+
+/**
+ * The maximum amount of gravity the blob can withstand.
+ *
+ * @type {Number}
+ * @static
+ */
+Blob.MAX_GRAVITY = 0.0075;

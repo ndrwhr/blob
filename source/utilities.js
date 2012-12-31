@@ -1,4 +1,15 @@
 var Utilities = {
+    /**
+     * Converts a mouse event into a vec2.
+     *
+     * @param {MouseEvent} evt
+     *
+     * @return {vec2}
+     */
+    eventToVec2: function(evt){
+        return vec2.createFrom(evt.pageX, evt.pageY);
+    },
+
     computeHull: function(points, padding){
         var i, l;
 

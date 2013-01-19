@@ -11,8 +11,7 @@ var Mouth = function(options){
     this.world_ = options.world;
     this.blob_ = options.blob;
 
-    this.currentEmotion_ = 'HAPPY';
-    this.currentExpression_ = Mouth.EMOTION_PATHS[this.currentEmotion_].map(function(point){
+    this.currentExpression_ = Mouth.EMOTION_PATHS[this.blob_.currentEmotion].map(function(point){
         return point.slice(0);
     });
 };
@@ -24,14 +23,6 @@ Mouth.prototype = {
      * @type {vec2}
      */
     point: null,
-
-    /**
-     * The emotion that the mouth should be trying to display.
-     *
-     * @type {String}
-     * @private
-     */
-    currentEmotion_: null,
 
     /**
      * The current current expression of the mouth as array of 2d points.
@@ -64,26 +55,6 @@ Mouth.prototype = {
         context.save();
         context.translate(point[0] - radius, point[1] - radius);
 
-        // Figure out what emotion the mouth should display.
-        var dist = vec2.dist(this.point.current, this.point.previous);
-        if (!this.point.invMass){
-            // Grabbed by the user.
-            this.currentEmotion_ = 'GAGGED';
-        } else if (dist > 0.03){
-            // Being shaken.
-            this.currentEmotion_ = 'TERROR';
-        } else if (this.blob_.isComprimizied() || dist > 0.015){
-            // Grabbed or moving a little.
-            this.currentEmotion_ = 'SAD';
-        } else if (this.blob_.isBored()){
-            this.currentEmotion_ = 'BORED';
-        } else if (this.blob_.inDanger()){
-            // In danger of being grabbed.
-            this.currentEmotion_ = 'WORRIED';
-        } else {
-            this.currentEmotion_ = 'HAPPY';
-        }
-
         this.updateExpression_();
 
         var points = this.currentExpression_.map(function(point){
@@ -95,23 +66,23 @@ Mouth.prototype = {
                 context: context,
                 points: points,
                 curvature: Mouth.CURVATURE,
-                fillStyle: 'rgba(225, 245, 255, 0.6)',
-                strokeStyle: 'rgba(225, 245, 255, 0.8)',
+                fillStyle: 'rgba(255, 255, 255, 0.2)',
+                strokeStyle: 'rgba(255, 255, 255, 0.4)',
                 lineWidth: 2,
 
                 debug: true,
-                debugFillStyle: 'rgba(255, 255, 255, 0.9)',
-                debugStrokeStyle: 'rgba(255, 255, 255, 0.8)',
+                debugFillStyle: 'rgba(255, 255, 255, 0.6)',
+                debugStrokeStyle: 'rgba(255, 255, 255, 0.5)',
                 debugLineWidth: 1,
-                knotRadius: 3,
-                controlRadius: 2
+                knotRadius: 2,
+                controlRadius: 1
             });
         } else {
             Utilities.drawSpline({
                 context: context,
                 points: points,
                 curvature: Mouth.CURVATURE,
-                fillStyle: 'rgba(0,0,0,0.85)'
+                fillStyle: 'rgba(0, 0, 0, 0.85)'
             });
         }
 
@@ -135,7 +106,7 @@ Mouth.prototype = {
         var currentPoint, targetPoint, sign;
         for (var i = 0, l = this.currentExpression_.length; i < l; i++){
             currentPoint = this.currentExpression_[i];
-            targetPoint = Mouth.EMOTION_PATHS[this.currentEmotion_][i];
+            targetPoint = Mouth.EMOTION_PATHS[this.blob_.currentEmotion][i];
 
             // Lerp vertically.
             if (Math.abs(currentPoint[1] - targetPoint[1]) > Mouth.LERP){
@@ -174,7 +145,7 @@ Mouth.EMOTION_PATHS = {
     SAD: [[0, 0.7], [0.5, 0.3], [1, 0.7], [0.5, 0.5]],
     TERROR: [[0.1, 0.5], [0.5, 0.1], [0.9, 0.5], [0.5, 0.9]],
     WORRIED: [[0, 0.6], [0.5, 0.3], [1, 0.6], [0.5, 0.7]],
-    GAGGED: [[0.3, 0.6], [0.5, 0.45], [0.7, 0.6], [0.5, 0.55]],
+    GAGGED: [[0.3, 0.55], [0.5, 0.45], [0.7, 0.55], [0.5, 0.6]],
     BORED: [[0, 0.5], [0.5, 0.4], [1, 0.5], [0.5, 0.7]]
 };
 

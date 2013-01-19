@@ -3,6 +3,8 @@ var Eye = function(options){
     this.scleraPoint = options.scleraPoint;
     this.pupilPoint = options.pupilPoint;
     this.world_ = options.world;
+    this.scleraRadius_ = options.scleraRadius || Eye.SCLERA_RADIUS;
+    this.pupilRadius_ = options.pupilRadius || Eye.PUPIL_RADIUS;
 };
 
 Eye.prototype = {
@@ -33,10 +35,10 @@ Eye.prototype = {
 
     drawSclera_: function(context, debug){
         var p = this.world_.toPixelsVec(this.scleraPoint.current);
-        var radius = this.world_.toPixelsValue(Eye.SCLERA_RADIUS);
+        var radius = this.world_.toPixelsValue(this.scleraRadius_);
 
         context.beginPath();
-        context.moveTo(p[0], p[1]);
+        context.moveTo(p[0] + radius, p[1]);
         context.arc(p[0], p[1], radius, 0, Math.PI * 2, false);
 
         if (debug){
@@ -53,10 +55,10 @@ Eye.prototype = {
 
     drawPupil_: function(context, debug){
         var p = this.world_.toPixelsVec(this.pupilPoint.current);
-        var radius = this.world_.toPixelsValue(Eye.PUPIL_RADIUS);
+        var radius = this.world_.toPixelsValue(this.pupilRadius_);
 
         context.beginPath();
-        context.moveTo(p[0], p[1]);
+        context.moveTo(p[0] + radius, p[1]);
         context.arc(p[0], p[1], radius, 0, Math.PI * 2, false);
 
         if (debug){
@@ -67,16 +69,6 @@ Eye.prototype = {
             context.fill();
         } else {
             context.fillStyle = 'rgba(0,0,0,0.75)';
-            context.fill();
-        }
-
-        if (!debug){
-            var innerRadius = radius * 0.55;
-            var innerOffset = radius * 0.15;
-            context.fillStyle = 'rgba(255,255,255,0.05)';
-            context.beginPath();
-            context.moveTo(p[0], p[1]);
-            context.arc(p[0] + innerOffset, p[1] + innerOffset, innerRadius, 0, Math.PI * 2, false);
             context.fill();
         }
     }

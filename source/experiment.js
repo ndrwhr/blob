@@ -15,6 +15,8 @@ var Experiment = function(){
         experiment: this
     });
 
+    this.favIcon_ = new FavIcon();
+
     this.initializeEvents_();
     this.reset();
 
@@ -82,6 +84,12 @@ Experiment.prototype = {
     currentColor_: null,
 
     /**
+     * A reference to a FavIcon instance.
+     * @type {FavIcon}
+     */
+    favIcon_: null,
+
+    /**
      * Instantiates a new blob and world.
      *
      * @private
@@ -97,7 +105,9 @@ Experiment.prototype = {
         this.currentGravity_ = vec2.create();
 
         this.world_ = new World({
-            gravity: this.controls_.currentGravity
+            gravity: this.controls_.currentGravity,
+            width: window.innerWidth,
+            height: window.innerHeight
         });
 
         this.blob_ = new Blob({
@@ -143,7 +153,7 @@ Experiment.prototype = {
      * @private
      */
     resize_: function(){
-        this.world_.setSize();
+        this.world_.setSize(window.innerWidth, window.innerHeight);
 
         this.canvas_.height = window.innerHeight;
         this.canvas_.width = window.innerWidth;
@@ -220,8 +230,15 @@ Experiment.prototype = {
             'lightpink',
             'lightsalmon',
             'lightseagreen',
-            'lightskyblue'
+            'lightskyblue',
+            'palevioletred',
+            'yellowgreen',
+            'peru'
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     }
 };
+
+document.addEventListener('DOMContentLoaded', function(){
+    window.exp = new Experiment();
+});

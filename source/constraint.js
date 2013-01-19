@@ -100,13 +100,18 @@ Constraint.prototype = {
      *
      * @param {CanvasRenderingContext2D} context The context to be drawn into.
      */
-    drawDebug: function(context){
-        var p1 = this.world_.toPixelsVec(this.points_[0].current);
-        var p2 = this.world_.toPixelsVec(this.points_[1].current);
+    draw: function(context){
+        var buffer = 0.05;
 
-        context.lineCap = 'round';
-        context.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        context.lineWidth = 2;
+        var p1 = this.world_.toPixelsVec(this.points_[0].current);
+        var r1 = this.world_.toPixelsValue(this.points_[0].radius + buffer);
+        var p2 = this.world_.toPixelsVec(this.points_[1].current);
+        var r2 = this.world_.toPixelsValue(this.points_[1].radius + buffer);
+
+        var norm = vec2.normalize(vec2.subtract(p2, p1, vec2.create()));
+
+        p1 = vec2.add(p1, vec2.scale(norm, r1, vec2.create()));
+        p2 = vec2.subtract(p2, vec2.scale(norm, r2, vec2.create()));
 
         context.beginPath();
         context.moveTo(p1[0], p1[1]);

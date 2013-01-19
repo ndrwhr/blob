@@ -13,7 +13,7 @@ var World = function(options){
     this.interactivePoints_ = [];
     this.nonInteractivePoints_ = [];
 
-    this.setSize();
+    this.setSize(options.width, options.height);
 };
 
 World.prototype = {
@@ -79,11 +79,14 @@ World.prototype = {
     maxScale_: null,
 
     /**
-     * Sets the size of the system to fit maximally inside of the window.
+     * Sets the size of the system to the provided width and height.
+     *
+     * @param {number} width The new width of the world.
+     * @param {number} height The new height of the world.
      */
-    setSize: function(){
-        var innerWidth = window.innerWidth;
-        var innerHeight = window.innerHeight;
+    setSize: function(width, height){
+        var innerWidth = width;
+        var innerHeight = height;
 
         if (innerWidth > innerHeight){
             this.width = World.MIN_DIMENSION * (innerWidth / innerHeight);
@@ -170,17 +173,6 @@ World.prototype = {
 
         for (i = 0, l = this.nonInteractivePoints_.length; i < l; i++)
             this.nonInteractivePoints_[i].move(World.DT);
-    },
-
-    /**
-     * Calls to each constraint in the system to draw itself.
-     *
-     * @param {CanvasRenderingContext2D} context The context to be drawn into.
-     */
-    drawDebug: function(context){
-        for (i = 0, l = this.constraints_.length; i < l; i++){
-            this.constraints_[i].drawDebug(context);
-        }
     },
 
     /**

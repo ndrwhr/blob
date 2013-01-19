@@ -10,6 +10,15 @@ var Utilities = {
         return vec2.createFrom(evt.pageX, evt.pageY);
     },
 
+    /**
+     * Given a set of points compute which ones form a convex hull. If a padding is provided then
+     * expand the hull by that amount.
+     *
+     * @param {vec2[]} points
+     * @param {number} padding Value between 0 and 1.
+     *
+     * @return {vec2[]}
+     */
     computeHull: function(points, padding){
         var i, l;
 
@@ -58,7 +67,7 @@ var Utilities = {
 
         if (!padding) return hull;
 
-        var scale = Blob.PADDING;
+        var scale = padding;
         var offset = vec2.subtract(vec2.scale(center, scale, vec2.create()), center);
         var expandedHull = [];
         for (i = 0, l = hull.length; i < l; i++){
@@ -71,6 +80,23 @@ var Utilities = {
         return expandedHull;
     },
 
+    /**
+     * Draws a spline around the passed in points.
+     *
+     * @param {Object} options An object literal with the following values:
+     *     - {CanvasRenderingContext2D} context The context in which the spline should be drawn.
+     *     - {vec2[]} points Array of points to be connected by a spline.
+     *     - {number} curvature The curvature factor to be used when calculating the controls.
+     *     - {string} fillStyle The style to be applied to the area created by the spline.
+     *     - {string} strokeStyle The style to be applied to the curve lines.
+     *     - {number} lineWidth The width of the line of the spline in pixels.
+     *     - {boolean} debug True if the debug lines should be drawn,
+     *     - {string} debugFillStyle The style to be applied to debug areas (controls).
+     *     - {string} debugStrokeStyle The style to be applied to debug lines.
+     *     - {number} debugLineWidth The width of of the control lines in pixels.
+     *     - {number} knotRadius The radius for each knot point in pixels.
+     *     - {number} controlRadius The radius for each control point in pixels.
+     */
     drawSpline: function(options){
         var context = options.context;
         var curves = this.getCurves_(options.points, options.curvature);
@@ -91,6 +117,10 @@ var Utilities = {
         if (options.debug) this.drawDebug_(options, curves);
     },
 
+    /**
+     * Draws all the knots and control points of the spline as well as a line from the control
+     * points to their respective knots.
+     */
     drawDebug_: function(options, curves){
         var context = options.context;
 
@@ -129,6 +159,10 @@ var Utilities = {
         }
     },
 
+    /**
+     * Given a context and a set of curves (knots and controls) actually draw bezier curves to the
+     * canvas context.
+     */
     drawPath_: function(context, curves){
         var i, l;
 

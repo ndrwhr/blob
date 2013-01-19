@@ -23,7 +23,7 @@ var Controls = function(options){
     this.resetEl_.addEventListener('click', this.resetButtonClicked_.bind(this));
 
     this.gravityEl_ = options.gravityEl;
-    this.gravityArrow_ = this.gravityEl_.querySelector('.arrow');
+    this.gravityArrow_ = this.gravityEl_.querySelector('i');
     this.updateGravitButtonDims_();
 
     this.prevGravityScale_ = 1;
@@ -135,10 +135,10 @@ Controls.prototype = {
 
         if (this.resetAnimationTimeout_) return;
 
-        evt.target.classList.add('animate');
+        this.resetEl_.classList.add('animate');
 
         this.resetAnimationTimeout_ = setTimeout(function(){
-            evt.target.classList.remove('animate');
+            this.resetEl_.classList.remove('animate');
 
             this.resetAnimationTimeout_ = null;
         }.bind(this), 500);
@@ -250,9 +250,17 @@ Controls.prototype = {
 
             // Update the angle of the arrow.
             var angle = Math.atan2(direction[1], direction[0]);
-            this.gravityArrow_.style.webkitTransform = 'rotate(' + angle.toFixed(2) + 'rad) ' +
-                'scale(' + magnitude + ')';
 
+            [
+                'webkitTransform',
+                'mozTransform',
+                'msTransform',
+                'oTransform',
+                'transform'
+            ].forEach(function(property){
+                this.gravityArrow_.style[property] = 'rotate(' + angle.toFixed(2) +
+                    'rad) ' + 'scale(' + magnitude + ')';
+            }, this);
             document.body.classList.add('gravity-enabled');
         } else {
             document.body.classList.remove('gravity-enabled');

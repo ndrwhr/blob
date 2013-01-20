@@ -9,18 +9,25 @@
  *
  * @param {Object} options An object literal with the following properties:
  *     - {Experiment} experiment The experiment that these controls are bound to.
- *     - {debugEl} Element The dom element for the debug toggle button.
- *     - {resetEl} Element The dom element for the reset button.
- *     - {gravityEl} Element The dom element for the gravity control button.
+ *     - {Element} debugEl The dom element for the debug toggle button.
+ *     - {Element} resetEl The dom element for the reset button.
+ *     - {Element} gravityEl The dom element for the gravity control button.
+ *     - {boolean} touchEventsAvailable True if we should bind using touch events.
+ *     - {boolean} orientationEventsAvailable True if we should bind on orientation events.
  */
 var Controls = function(options){
+    this.touchEventsAvailable_ = options.touchEventsAvailable;
+    this.orientationEventsAvailable_ = options.orientationEventsAvailable;
+
     this.experiment_ = options.experiment;
 
     this.debugEl_ = options.debugEl;
-    this.debugEl_.addEventListener('click', this.toggleRenderMode_.bind(this));
+    this.debugEl_.addEventListener(this.touchEventsAvailable_ ? 'touchend' : 'click',
+        this.toggleRenderMode_.bind(this));
 
     this.resetEl_ = options.resetEl;
-    this.resetEl_.addEventListener('click', this.resetButtonClicked_.bind(this));
+    this.resetEl_.addEventListener(this.touchEventsAvailable_ ? 'touchend' : 'click',
+        this.resetButtonClicked_.bind(this));
 
     this.gravityEl_ = options.gravityEl;
     this.gravityArrow_ = this.gravityEl_.querySelector('i');
@@ -30,10 +37,15 @@ var Controls = function(options){
     this.prevGravityDirection_ = vec2.createFrom(0, 1);
     this.currentGravity = vec2.create();
 
-    // Pre-bind the mouse move callback to ease adding and removing event listeners.
-    this.gravityButtonMouseMove_ = this.gravityButtonMouseMove_.bind(this);
-    this.gravityEl_.addEventListener('mousedown', this.gravityButtonMouseDown_.bind(this));
-    document.body.addEventListener('mouseup', this.gravityButtonMouseUp_.bind(this));
+    if (this.orientationEventsAvailable_ || this.touchEventsAvailable_){
+        window.addEventListener('deviceorientation', this.deviceOrientationEvt_.bind(this), false);
+        this.gravityEl_.addEventListener('touchend', this.toggleGravity_.bind(this));
+    } else {
+        // Pre-bind the mouse move callback to ease adding and removing event listeners.
+        this.gravityButtonMouseMove_ = this.gravityButtonMouseMove_.bind(this);
+        this.gravityEl_.addEventListener('mousedown', this.gravityButtonMouseDown_.bind(this));
+        document.body.addEventListener('mouseup', this.gravityButtonMouseUp_.bind(this));
+    }
 };
 
 Controls.prototype = {
@@ -123,6 +135,22 @@ Controls.prototype = {
      * @private
      */
     mouseStartPosition_: null,
+
+    /**
+     * True if the users device supports touch events.
+     *
+     * @type {boolean}
+     * @private
+     */
+    touchEventsAvailable_: null,
+
+    /**
+     * True if the users device can emit orientation events.
+     *
+     * @type {boolean}
+     * @private
+     */
+    orientationEventsAvailable_: null,
 
     /**
      * Called when the reset button is clicked.
@@ -223,18 +251,45 @@ Controls.prototype = {
 
         // If the user dragged less that 5px, just assume this was a click.
         if (vec2.dist(Utilities.eventToVec2(evt), this.mouseStartPosition_) < 5){
-            if (vec2.length(this.currentGravity)){
-                // If the world currently has gravity, disable it.
-                this.updateGravity_(vec2.createFrom(0, 0), 0);
-            } else {
-                // If the world previously did not have gravity, restore the previous values.
-                this.updateGravity_(this.prevGravityDirection_, this.prevGravityScale_);
-            }
+            this.toggleGravity_();
         }
 
         this.mouseStartPosition_ = null;
 
         document.body.removeEventListener('mousemove', this.gravityButtonMouseMove_);
+    },
+
+    /**
+     * Called only when the users device orientation changes.
+     */
+    deviceOrientationEvt_: function(evt){
+        var direction = vec2.createFrom(evt.gamma, evt.beta);
+
+        if (window.orientation){
+            mat2.multiplyVec2(mat2.rotate(mat2.identity(), -window.orientation), direction);
+        }
+
+        this.prevGravityDirection_ = direction;
+        this.prevGravityScale_ = 1;
+
+        if (vec2.length(this.currentGravity)){
+            this.updateGravity_(this.prevGravityDirection_, this.prevGravityScale_);
+        } else {
+            this.updateGravityControl_(direction, 1);
+        }
+    },
+
+    /**
+     * Toggles gravity on or off.
+     */
+    toggleGravity_: function(){
+        if (vec2.length(this.currentGravity)){
+            // If the world currently has gravity, disable it.
+            this.updateGravity_(vec2.createFrom(0, 0), 0);
+        } else {
+            // If the world previously did not have gravity, restore the previous values.
+            this.updateGravity_(this.prevGravityDirection_, this.prevGravityScale_);
+        }
     },
 
     /**
@@ -248,19 +303,8 @@ Controls.prototype = {
             this.prevGravityScale_ = magnitude;
             this.prevGravityDirection_ = direction;
 
-            // Update the angle of the arrow.
-            var angle = Math.atan2(direction[1], direction[0]);
+            this.updateGravityControl_(direction, magnitude);
 
-            [
-                'webkitTransform',
-                'mozTransform',
-                'msTransform',
-                'oTransform',
-                'transform'
-            ].forEach(function(property){
-                this.gravityArrow_.style[property] = 'rotate(' + angle.toFixed(2) +
-                    'rad) ' + 'scale(' + magnitude + ')';
-            }, this);
             document.body.classList.add('gravity-enabled');
         } else {
             document.body.classList.remove('gravity-enabled');
@@ -268,5 +312,24 @@ Controls.prototype = {
 
         this.currentGravity = vec2.scale(vec2.normalize(direction),
             Blob.MAX_GRAVITY * magnitude);
+    },
+
+    /**
+     * Updates the actual gravity control to point in a given direction.
+     * @param {vec2} direction The direction that the arrow should point.
+     * @param {number} magnitude The magnitude of the gravity.
+     */
+    updateGravityControl_: function(direction, magnitude){
+        var angle = Math.atan2(direction[1], direction[0]);
+        [
+            'webkitTransform',
+            'mozTransform',
+            'msTransform',
+            'oTransform',
+            'transform'
+        ].forEach(function(property){
+            this.gravityArrow_.style[property] = 'rotate(' + angle.toFixed(2) +
+                'rad) ' + 'scale(' + magnitude + ')';
+        }, this);
     }
 };

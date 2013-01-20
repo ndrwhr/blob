@@ -390,10 +390,11 @@ Blob.prototype = {
     getClosestMember_: function(target){
         var minDist = Infinity;
         var closestMember = null;
+        var buffer = 0.5;
 
         var checkMember = function(member, point, radius){
             var dist = vec2.dist(target, point.current);
-            if (dist < minDist && dist <= radius){
+            if (dist < minDist && dist <= radius + buffer){
                 minDist = dist;
                 closestMember = member;
             }

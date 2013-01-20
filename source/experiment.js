@@ -8,7 +8,13 @@ var Experiment = function(){
     this.canvas_.height = window.innerHeight;
     this.canvas_.width = window.innerWidth;
 
+    this.touchEventsAvailable_ = ('ontouchstart' in document.documentElement);
+
+    this.orientationEventsAvailable_ = !!window.DeviceMotionEvent;
+
     this.controls_ = new Controls({
+        touchEventsAvailable: this.touchEventsAvailable_,
+        orientationEventsAvailable: this.orientationEventsAvailable_,
         gravityEl: document.querySelector('.control.gravity'),
         debugEl: document.querySelector('.control.debug'),
         resetEl: document.querySelector('.control.reset'),
@@ -90,6 +96,22 @@ Experiment.prototype = {
     favIcon_: null,
 
     /**
+     * True if the users device supports touch events.
+     *
+     * @type {boolean}
+     * @private
+     */
+    touchEventsAvailable_: null,
+
+    /**
+     * True if the users device can emit orientation events.
+     *
+     * @type {boolean}
+     * @private
+     */
+    orientationEventsAvailable_: null,
+
+    /**
      * Instantiates a new blob and world.
      *
      * @private
@@ -141,10 +163,18 @@ Experiment.prototype = {
      */
     initializeEvents_: function(){
         window.addEventListener('resize', this.resize_.bind(this));
-        document.body.addEventListener('mousedown', this.mouseDown_.bind(this));
-        document.body.addEventListener('mousemove', this.mouseMove_.bind(this));
-        document.body.addEventListener('mouseup', this.mouseUp_.bind(this));
-        document.body.addEventListener('mouseout', this.mouseOut_.bind(this));
+
+        if (this.touchEventsAvailable_){
+            document.addEventListener('touchstart', this.mouseDown_.bind(this));
+            document.addEventListener('touchmove', this.mouseMove_.bind(this));
+            document.addEventListener('touchend', this.mouseUp_.bind(this));
+            document.addEventListener('touchcancel', this.mouseOut_.bind(this));
+        } else {
+            document.body.addEventListener('mousedown', this.mouseDown_.bind(this));
+            document.body.addEventListener('mousemove', this.mouseMove_.bind(this));
+            document.body.addEventListener('mouseup', this.mouseUp_.bind(this));
+            document.body.addEventListener('mouseout', this.mouseOut_.bind(this));
+        }
     },
 
     /**
@@ -166,6 +196,9 @@ Experiment.prototype = {
      */
     mouseDown_: function(evt){
         evt.preventDefault();
+
+        if (evt.touches) evt = evt.touches[0];
+
         this.blob_.mouseDown(this.eventToWorldVec2_(evt));
     },
 
@@ -176,6 +209,9 @@ Experiment.prototype = {
      */
     mouseMove_: function(evt){
         evt.preventDefault();
+
+        if (evt.touches) evt = evt.touches[0];
+
         this.blob_.mouseMove(this.eventToWorldVec2_(evt));
     },
 
@@ -186,7 +222,10 @@ Experiment.prototype = {
      */
     mouseUp_: function(evt){
         evt.preventDefault();
-        this.blob_.mouseUp(this.eventToWorldVec2_(evt));
+
+        if (evt.touches) evt = evt.touches[0];
+
+        this.blob_.mouseUp(evt && this.eventToWorldVec2_(evt));
     },
 
     /**

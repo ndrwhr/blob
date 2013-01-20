@@ -34,13 +34,13 @@ body {
     @each $prefix in $prefixes {
         cursor: #{$prefix}grab;
     }
-}
 
-body.grabbed {
-    @each $prefix in $prefixes {
-        cursor: #{$prefix}grabbing;
+    &.grabbed {
+        @each $prefix in $prefixes {
+            cursor: #{$prefix}grabbing;
+        }
     }
-}
+} // body
 
 canvas {
     background-color: #fefefe;

@@ -31,27 +31,137 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
+
+    font-size: 13px;
+    font-family: Helvetica, Arial, sans-serif;
+} // body
+
+canvas {
+    width: 100%;
+    height: 100%;
+    background-color: #fefefe;
+    @include background(radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%));
+
     @each $prefix in $prefixes {
         cursor: #{$prefix}grab;
     }
 
-    &.grabbed {
+    body.grabbed & {
         @each $prefix in $prefixes {
             cursor: #{$prefix}grabbing;
         }
     }
-} // body
-
-canvas {
-    background-color: #fefefe;
-    @include background(radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%));
-    cursor: inherit;
 }
 
 body.debug-mode canvas {
     background-color: #222222;
     @include background(radial-gradient(center, ellipse cover, #222222 70%, #444444 100%));
 }
+
+#about {
+    $regular-border-color: #eaeaea;
+    $regular-background-color: rgba(255, 255, 255, 0.8);
+    $regular-font-color: #777;
+    $regular-link-color: #999;
+
+    $debug-border-color: #333;
+    $debug-background-color: rgba(30, 30, 30, 0.8);
+    $debug-font-color: #fafafa;
+    $debug-link-color: white;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 250px;
+    padding: 0px 15px 25px 20px;
+    border-bottom-right-radius: 5px;
+    overflow: hidden;
+
+    border-right: 1px solid $regular-border-color;
+    border-bottom: 1px solid $regular-border-color;
+    background: $regular-background-color;
+    color: $regular-font-color;
+
+    @include transition(all 100ms ease-in-out);
+
+    body.debug-mode & {
+        border-right: 1px solid $debug-border-color;
+        border-bottom: 1px solid $debug-border-color;
+        background: $debug-background-color;
+        color: $debug-font-color;
+    }
+
+    &.closed {
+        height: 0;
+
+        > *:not(about-toggle) {
+            display: none;
+        }
+
+        .about-toggle {
+            &.hide {
+                display: none;
+            }
+            &.show {
+                display: block;
+            }
+        }
+    } // &.closed
+
+    .about-toggle.show {
+        display: none;
+    }
+
+    h1 {
+        font-weight: bold;
+        font-size: 22px;
+        margin-bottom: 13px;
+        margin-top: 10px;
+        letter-spacing: -0.05em;
+
+        a {
+            font-size: 11px;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+        }
+    } // h1
+
+    p {
+        line-height: 1.5em;
+        margin-bottom: 1.5em;
+        &.social {
+            text-align: center;
+        }
+    } // p
+
+    a {
+        color: $regular-link-color;
+        body.debug-mode & {
+            color: $debug-link-color;
+        }
+    }
+
+    a.about-toggle {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom-right-radius: 4px;
+        padding: 7px 0;
+        text-align: center;
+        text-decoration: none;
+
+        border-top: 1px solid $regular-border-color;
+        background: $regular-background-color;
+        color: #aaa;
+
+        body.debug-mode & {
+            border-top: 1px solid $debug-border-color;
+            background: $debug-background-color;
+            color: #666;
+        }
+    } // #about-toggle
+} // #about
 
 .control {
     position: absolute;

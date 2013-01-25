@@ -5,6 +5,13 @@
     <meta name = "viewport" content = "width=device-width, initial-scale=0.75, user-scalable=no"/>
     <link id="favicon" rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABEklEQVQ4T62T0Q2CMBCG23cSXxmjG4gTqI9sIQMQMQwATsErhgV0AhmAAXiEhHe8H9umlMZgtMkl12vv6/XPHWfWGsdRUGhPFpDBx6rJ7mQ3zjl8vbi5oeQT7TMbauw78hOCXFVMAyi5lC9/yNdHJUGO2E2AFS+7oBFBci7//HTdGIZhCnue5zrGd3YAJOSczRtIjOOY1fVbLyEES9PUBboAAHW3JiCKIp2s4oBk2ULfBwAoZaMutm3LwjB0CllVlV1F9xWgKArm+74J7//yBaeI0KFpmlUiol0hpNbB1AO+VbY67skJfm8khfuylTFUB+S6hgmaLL4jH0LZGKZcPTwDIChbG/QATSgvqnHGEM3G+QVMYYS4YGyCbwAAAABJRU5ErkJggg==" />
 
+    <meta property="og:title" content="The blob by Andrew Hoyer."/>
+    <meta property="og:image" content="http://andrew-hoyer.com/experiments/blob/assets/images/blob.jpg"/>
+    <meta property="og:url" content="http://andrew-hoyer.com/experiments/blob/"/>
+    <meta property="og:site_name" content="Andrew-Hoyer.com"/>
+    <meta property="og:type" content="experiment"/>
+    <meta property="og:description" content="Just a loveable blob built on some simple physics. Grab eye, drag it around."/>
+
     <title>The Blob | Andrew Hoyer</title>
 
     <link rel="stylesheet" type="text/css" href="assets/css/main.css">
@@ -16,5 +23,30 @@
     <div class="control reset"><i></i></div>
     <div class="control debug"><i></i></div>
     <div class="control gravity"><i></i></div>
+
+    <div id="about">
+        <h1>THE BLOB <a href="http://andrew-hoyer.com">(More Experiments)</a></h1>
+
+        <p>Just a loveable blob built on some simple physics. Grab an eye, drag it around, or learn <a href="making-of/">how it was made</a>.</p>
+
+        <p class="social">
+            <iframe src="http://www.facebook.com/plugins/like.php?href=http://andrew-hoyer.com/experiments/blob/&amp;layout=button_count&amp;show_faces=false&amp;width=90&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowtransparency="true"></iframe>
+
+            <iframe allowtransparency="true" frameborder="0" scrolling="no" src="http://platform.twitter.com/widgets/tweet_button.html?count=horizontal&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=http%3A%2F%2Fandrew-hoyer.com%2Fexperiments%2Fblob%2F&amp;size=m&amp;text=A%20loveable%20JavaScript%20Blob%20by%20%40ndrwhr&amp;url=http%3A%2F%2Fandrew-hoyer.com%2Fexperiments%2Fblob" class="twitter-share-button twitter-count-horizontal" style="width: 107px; height: 20px;" title="Twitter Tweet Button" data-twttr-rendered="true"></iframe>
+        </p>
+
+        <a class="about-toggle hide" href="javascript:void(0)" onclick="this.parentElement.classList.add('closed');">Hide</a>
+        <a class="about-toggle show" href="javascript:void(0)" onclick="this.parentElement.classList.remove('closed');">About</a>
+    </div>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-15032423-1', 'andrew-hoyer.com');
+      ga('send', 'pageview');
+    </script>
 </body>
 </html>

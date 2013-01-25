@@ -1,5 +1,7 @@
 .sass-cache
 .DS_Store
 app.js
-assets/css/main.css
+assets/css/
 assets/images/sprites
+making-of/commits
+making-of/source/commits.js

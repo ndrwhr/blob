@@ -195,8 +195,6 @@ Experiment.prototype = {
      * @private
      */
     mouseDown_: function(evt){
-        evt.preventDefault();
-
         if (evt.touches) evt = evt.touches[0];
 
         this.blob_.mouseDown(this.eventToWorldVec2_(evt));
@@ -236,7 +234,6 @@ Experiment.prototype = {
      * @private
      */
     mouseOut_: function(evt){
-        evt.preventDefault();
         this.mouseUp_(evt);
     },
 

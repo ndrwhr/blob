@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>EEEEYYYESSS</title>
+
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        overflow: hidden;
+    }
+    </style>
+
+    <script type="text/javascript" src="lib/gl-matrix-min.js"></script>
+    <script type="text/javascript" src="lib/patches.js"></script>
+    <script type="text/javascript" src="source/constraint.js"></script>
+    <script type="text/javascript" src="source/point.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+
+var canvas = document.createElement('canvas');
+var context = canvas.getContext('2d');
+
+var resize = function(){
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+};
+
+resize();
+
+document.body.appendChild(canvas);
+
+var generateAdjacencyMatrix = function(locations){
+    var i, j;
+
+    var matrix = new Array(locations.length);
+    for(i = 0; i < locations.length; i++)
+        matrix[i] = new Array(locations.length);
+
+    for(i = 0; i < locations.length; i++){
+        matrix[i][i] = Infinity;
+
+        for (j = i + 1; j < locations.length; j++){
+            matrix[j][i] = matrix[i][j] = vec2.dist(locations[i].current, locations[j].current);
+        }
+    }
+
+    return matrix;
+};
+
+var numPoints = 15;
+var radius = 0.03;
+var mass = 0.01;
+var points = [];
+for (var i = 0; i < numPoints; i++){
+    points.push(new Point({
+        x: Math.random(),
+        y: Math.random(),
+        radius: radius,
+        mass: mass
+    }));
+}
+
+points.sort(function(p1, p2){
+    return vec2.length(p2.current) - vec2.length(p1.current);
+});
+
+var matrix = generateAdjacencyMatrix(points);
+
+var constraints = [];
+matrix.forEach(function(row, index1){
+    if (index1 === numPoints - 1) return;
+
+    var connections = Math.floor(Math.random() * 1) + 2;
+
+    while(connections > 0){
+        connections--;
+
+        var min = Math.min.apply(null, row);
+
+        // if (min > 0.3) return;
+
+        var index2 = row.indexOf(min);
+        // Remove this value so we don't use it again.
+        row[index2] = matrix[index2][index1] = Infinity;
+
+        constraints.push(new Constraint({
+            points: [points[index1], points[index2]]
+        }));
+    }
+});
+
+var getClosestPoint = function(pos){
+    var minDist = Infinity;
+    var minPoint = null;
+
+    points.forEach(function(point, index){
+        var dist = vec2.dist(pos, point.current);
+        if (dist < minDist){
+            minDist = dist;
+            minPoint = point;
+        }
+    });
+
+    return minPoint;
+};
+
+var eventToFastVector = function(evt){
+    return vec2.createFrom(evt.pageX / window.innerWidth, evt.pageY / window.innerHeight);
+};
+
+var closest;
+var previousEvt;
+var mouseMove = function(evt){
+    evt.preventDefault();
+    closest.current = eventToFastVector(evt);
+    closest.previous = eventToFastVector(previousEvt);
+
+    previousEvt = evt;
+};
+
+document.body.addEventListener('mousedown', function(evt){
+    closest = getClosestPoint(eventToFastVector(evt));
+    closest.invMass = 0;
+    previousEvt = evt;
+    document.body.addEventListener('mousemove', mouseMove);
+});
+
+document.body.addEventListener('mouseup', function(){
+    closest.invMass = 1 / closest.mass;
+    closest = null;
+    document.body.removeEventListener('mousemove', mouseMove);
+});
+
+var colors = 'blue,coral,cyan,goldenrodyellow,gray,green,pink,salmon,seagreen,skyblue,slategray,steelblue,yellow';
+colors = colors.split(',').map(function(color){
+    return 'light' + color;
+});
+
+document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+(function step(){
+    var dt = 16;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    constraints.forEach(function(constraint){
+        constraint.satisfy(dt);
+    });
+
+    points.forEach(function(point){
+        point.move(dt);
+    });
+
+    constraints.forEach(function(constraint){
+        constraint.draw(context);
+    });
+
+    points.forEach(function(point){
+        point.draw(context);
+    });
+
+    requestAnimationFrame(step);
+    // setTimeout(step, 100);
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+/* line 17, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1;
+}
+
+/* line 24, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+/* line 10, ../sass/making-of.scss */
+body, html {
+  height: 100%;
+}
+
+/* line 14, ../sass/making-of.scss */
+body {
+  font-family: helvetica;
+  font-size: 13px;
+  background-color: #fafafa;
+  color: #777;
+}
+
+/* line 21, ../sass/making-of.scss */
+.content {
+  padding-right: 25px;
+  max-width: 850px;
+  min-width: 650px;
+  margin: 0 auto;
+}
+
+/* line 28, ../sass/making-of.scss */
+p {
+  margin: 0 0 0.75em;
+  line-height: 1.6em;
+  text-align: justify;
+}
+
+/* line 34, ../sass/making-of.scss */
+a, a:visited {
+  color: inherit;
+}
+
+/* line 38, ../sass/making-of.scss */
+b {
+  font-weight: bold;
+}
+
+/* line 42, ../sass/making-of.scss */
+h1, h2, h3 {
+  font-family: helvetica;
+  font-weight: bold;
+  letter-spacing: -0.05em;
+  color: black;
+}
+
+/* line 49, ../sass/making-of.scss */
+footer {
+  color: white;
+  padding: 25px;
+  line-height: 21px;
+  text-align: right;
+}
+/* line 55, ../sass/making-of.scss */
+footer p {
+  float: left;
+  color: white;
+  margin: 6px 15px 0 0;
+}
+/* line 61, ../sass/making-of.scss */
+footer iframe {
+  display: inline-block;
+  padding-top: 5px;
+}
+/* line 67, ../sass/making-of.scss */
+body.lightblue footer {
+  background-color: lightblue;
+}
+/* line 67, ../sass/making-of.scss */
+body.lightcoral footer {
+  background-color: lightcoral;
+}
+/* line 67, ../sass/making-of.scss */
+body.lightgreen footer {
+  background-color: lightgreen;
+}
+/* line 67, ../sass/making-of.scss */
+body.lightpink footer {
+  background-color: lightpink;
+}
+/* line 67, ../sass/making-of.scss */
+body.lightsalmon footer {
+  background-color: lightsalmon;
+}
+/* line 67, ../sass/making-of.scss */
+body.lightseagreen footer {
+  background-color: lightseagreen;
+}
+/* line 67, ../sass/making-of.scss */
+body.lightskyblue footer {
+  background-color: lightskyblue;
+}
+/* line 67, ../sass/making-of.scss */
+body.palevioletred footer {
+  background-color: palevioletred;
+}
+/* line 67, ../sass/making-of.scss */
+body.yellowgreen footer {
+  background-color: yellowgreen;
+}
+/* line 67, ../sass/making-of.scss */
+body.peru footer {
+  background-color: peru;
+}
+
+/* line 73, ../sass/making-of.scss */
+header {
+  padding: 25px;
+  margin-bottom: 50px;
+  color: white;
+  -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+}
+/* line 79, ../sass/making-of.scss */
+header h1, header p {
+  margin: 0 25px 0 75px;
+}
+/* line 83, ../sass/making-of.scss */
+header h1 {
+  font-size: 3.8em;
+  margin: 0;
+  color: white;
+  text-align: center;
+}
+/* line 90, ../sass/making-of.scss */
+header p {
+  margin-top: 12px;
+}
+/* line 95, ../sass/making-of.scss */
+body.lightblue header {
+  background-color: lightblue;
+}
+/* line 95, ../sass/making-of.scss */
+body.lightcoral header {
+  background-color: lightcoral;
+}
+/* line 95, ../sass/making-of.scss */
+body.lightgreen header {
+  background-color: lightgreen;
+}
+/* line 95, ../sass/making-of.scss */
+body.lightpink header {
+  background-color: lightpink;
+}
+/* line 95, ../sass/making-of.scss */
+body.lightsalmon header {
+  background-color: lightsalmon;
+}
+/* line 95, ../sass/making-of.scss */
+body.lightseagreen header {
+  background-color: lightseagreen;
+}
+/* line 95, ../sass/making-of.scss */
+body.lightskyblue header {
+  background-color: lightskyblue;
+}
+/* line 95, ../sass/making-of.scss */
+body.palevioletred header {
+  background-color: palevioletred;
+}
+/* line 95, ../sass/making-of.scss */
+body.yellowgreen header {
+  background-color: yellowgreen;
+}
+/* line 95, ../sass/making-of.scss */
+body.peru header {
+  background-color: peru;
+}
+
+/* line 101, ../sass/making-of.scss */
+.revisions {
+  margin-left: 25px;
+}
+/* line 104, ../sass/making-of.scss */
+.revisions .revision-wrapper {
+  position: relative;
+  padding-bottom: 25px;
+  border-left: 4px solid lightblue;
+}
+/* line 113, ../sass/making-of.scss */
+body.lightblue .revisions .revision-wrapper {
+  border-color: lightblue;
+}
+/* line 113, ../sass/making-of.scss */
+body.lightcoral .revisions .revision-wrapper {
+  border-color: lightcoral;
+}
+/* line 113, ../sass/making-of.scss */
+body.lightgreen .revisions .revision-wrapper {
+  border-color: lightgreen;
+}
+/* line 113, ../sass/making-of.scss */
+body.lightpink .revisions .revision-wrapper {
+  border-color: lightpink;
+}
+/* line 113, ../sass/making-of.scss */
+body.lightsalmon .revisions .revision-wrapper {
+  border-color: lightsalmon;
+}
+/* line 113, ../sass/making-of.scss */
+body.lightseagreen .revisions .revision-wrapper {
+  border-color: lightseagreen;
+}
+/* line 113, ../sass/making-of.scss */
+body.lightskyblue .revisions .revision-wrapper {
+  border-color: lightskyblue;
+}
+/* line 113, ../sass/making-of.scss */
+body.palevioletred .revisions .revision-wrapper {
+  border-color: palevioletred;
+}
+/* line 113, ../sass/making-of.scss */
+body.yellowgreen .revisions .revision-wrapper {
+  border-color: yellowgreen;
+}
+/* line 113, ../sass/making-of.scss */
+body.peru .revisions .revision-wrapper {
+  border-color: peru;
+}
+/* line 118, ../sass/making-of.scss */
+.revisions .revision-wrapper::after {
+  position: absolute;
+  top: 0;
+  left: -13.5px;
+  width: 23px;
+  height: 23px;
+  content: ' ';
+  background: #fafafa;
+  border: 3px solid lightblue;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
+  border-radius: 100px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+/* line 131, ../sass/making-of.scss */
+body.lightblue .revisions .revision-wrapper::after {
+  border-color: lightblue;
+}
+/* line 131, ../sass/making-of.scss */
+body.lightcoral .revisions .revision-wrapper::after {
+  border-color: lightcoral;
+}
+/* line 131, ../sass/making-of.scss */
+body.lightgreen .revisions .revision-wrapper::after {
+  border-color: lightgreen;
+}
+/* line 131, ../sass/making-of.scss */
+body.lightpink .revisions .revision-wrapper::after {
+  border-color: lightpink;
+}
+/* line 131, ../sass/making-of.scss */
+body.lightsalmon .revisions .revision-wrapper::after {
+  border-color: lightsalmon;
+}
+/* line 131, ../sass/making-of.scss */
+body.lightseagreen .revisions .revision-wrapper::after {
+  border-color: lightseagreen;
+}
+/* line 131, ../sass/making-of.scss */
+body.lightskyblue .revisions .revision-wrapper::after {
+  border-color: lightskyblue;
+}
+/* line 131, ../sass/making-of.scss */
+body.palevioletred .revisions .revision-wrapper::after {
+  border-color: palevioletred;
+}
+/* line 131, ../sass/making-of.scss */
+body.yellowgreen .revisions .revision-wrapper::after {
+  border-color: yellowgreen;
+}
+/* line 131, ../sass/making-of.scss */
+body.peru .revisions .revision-wrapper::after {
+  border-color: peru;
+}
+/* line 140, ../sass/making-of.scss */
+.revisions .revision {
+  position: relative;
+  padding: 25px;
+  margin-left: 25px;
+  background: white;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -moz-border-radius-topleft: 0px;
+  -webkit-border-top-left-radius: 0px;
+  border-top-left-radius: 0px;
+  -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+}
+/* line 149, ../sass/making-of.scss */
+.revisions .revision .blob-container {
+  position: relative;
+  overflow: hidden;
+  height: 400px;
+  background: #fafafa url("../images/loading.gif") no-repeat center center;
+  border: 1px solid #ccc;
+  margin: 0 0 15px;
+}
+/* line 157, ../sass/making-of.scss */
+.revisions .revision .blob-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: 0;
+  -webkit-transition: opacity 250ms ease-in;
+  -moz-transition: opacity 250ms ease-in;
+  -o-transition: opacity 250ms ease-in;
+  transition: opacity 250ms ease-in;
+}
+/* line 164, ../sass/making-of.scss */
+.revisions .revision .blob-container iframe.loaded {
+  opacity: 1;
+}
+/* line 170, ../sass/making-of.scss */
+.revisions .revision h2 {
+  font-size: 1.4em;
+  margin-bottom: 0.8em;
+}
+/* line 175, ../sass/making-of.scss */
+.revisions .revision h3 {
+  color: #999;
+  font-size: 0.9em;
+  font-weight: normal;
+  text-align: right;
+}
+/* line 181, ../sass/making-of.scss */
+.revisions .revision h3 a, .revisions .revision h3 a:visited {
+  color: inherit;
+}
+/* line 186, ../sass/making-of.scss */
+.revisions .revision ul {
+  margin: 15px 0 10px;
+}
+/* line 189, ../sass/making-of.scss */
+.revisions .revision ul li {
+  list-style-type: disc;
+  margin-left: 2.5em;
+  padding: 0 0 1em;
+  line-height: 1.6em;
+}
+/* line 198, ../sass/making-of.scss */
+.revisions .revision::after, .revisions .revision::before {
+  position: absolute;
+  top: 4px;
+  left: -8px;
+  width: 15px;
+  height: 15px;
+  content: ' ';
+  background: white;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+/* line 209, ../sass/making-of.scss */
+.revisions .revision::before {
+  z-index: -1;
+  -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+}

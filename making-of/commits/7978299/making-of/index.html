@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link id="favicon" rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABEklEQVQ4T62T0Q2CMBCG23cSXxmjG4gTqI9sIQMQMQwATsErhgV0AhmAAXiEhHe8H9umlMZgtMkl12vv6/XPHWfWGsdRUGhPFpDBx6rJ7mQ3zjl8vbi5oeQT7TMbauw78hOCXFVMAyi5lC9/yNdHJUGO2E2AFS+7oBFBci7//HTdGIZhCnue5zrGd3YAJOSczRtIjOOY1fVbLyEES9PUBboAAHW3JiCKIp2s4oBk2ULfBwAoZaMutm3LwjB0CllVlV1F9xWgKArm+74J7//yBaeI0KFpmlUiol0hpNbB1AO+VbY67skJfm8khfuylTFUB+S6hgmaLL4jH0LZGKZcPTwDIChbG/QATSgvqnHGEM3G+QVMYYS4YGyCbwAAAABJRU5ErkJggg==" />
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/making-of.css">
+
+    <title>Making of The Blob | Andrew Hoyer</title>
+
+    <script type="text/html" id="revisions-tmpl">
+        <% commits.forEach(function(commit){ %>
+            <div class="revision-wrapper">
+                <div class="revision">
+                    <div class="blob-container">
+                        <iframe data-iframe-src="commits/<%= commit.hash %>/index.html" scrolling="no"></iframe>
+                    </div>
+                    <h2><%= commit.title %></h2>
+
+                    <% commit.body.forEach(function(item){ %>
+                        <% if (Array.isArray(item)){ %>
+                            <ul>
+                                <% item.forEach(function(listItem){ %>
+                                    <li><%= listItem %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <p><%= item %></p>
+                        <% } %>
+                    <% }); %>
+
+                    <h3><a href="https://github.com/ndrwhr/blob/commit/<%= commit.hash %>" target="_blank"><%= commit.hash %></a> - <%= new Date(commit.date).format('mmmm d, yyyy') %></h3>
+                </div>
+            </div>
+        <% }); %>
+    </script>
+
+    <script type="text/javascript" src="../lib/patches.js"></script>
+    <script type="text/javascript" src="../lib/tmpl.js"></script>
+    <script type="text/javascript" src="../lib/date-format.js"></script>
+    <script type="text/javascript" src="source/commits.js"></script>
+</head>
+<body>
+    <header>
+        <div class="content">
+            <h1>MAKING OF <a href="../">THE BLOB</a></h1>
+            <p>In general when I start working on an experiment I have no idea what the final product is going to look like and quite often I'll just abandon the idea after a few rough prototypes. The blob seemed to have a lot a of potential from day one, so I took the time to make each commit a mini-milestone and also included a small description of what was accomplished. Thanks to the magic of git, below you can see and interact with each version of the blob (<b>Unfortunately not every version will work in every browser</b>).</p>
+        </div>
+    </header>
+    <div class="content">
+        <section class="revisions"></section>
+    </div>
+    <footer>
+        <p>An <a href="../">experiment</a> by <a href="http://andrew-hoyer.com">Andrew Hoyer</a>.</p>
+
+        <iframe src="http://www.facebook.com/plugins/like.php?href=http://andrew-hoyer.com/experiments/blob/&amp;layout=button_count&amp;show_faces=false&amp;width=90&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowtransparency="true"></iframe>
+
+        <iframe allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/tweet_button.html?count=horizontal&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=http%3A%2F%2Fandrew-hoyer.com%2Fexperiments%2Fblob%2F&amp;size=m&amp;text=The%20making%20of%20a%20loveable%20JavaScript%20Blob%20by%20%40ndrwhr&amp;url=http%3A%2F%2Fandrew-hoyer.com%2Fexperiments%2Fblob%2Fmaking-of" class="twitter-share-button twitter-count-horizontal" style="width: 107px; height: 20px;" title="Twitter Tweet Button" data-twttr-rendered="true"></iframe>
+    </footer>
+    <script type="text/javascript" src="source/making-of.js"></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-15032423-1', 'andrew-hoyer.com');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>

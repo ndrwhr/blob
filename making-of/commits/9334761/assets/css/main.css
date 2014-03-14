@@ -1,0 +1,165 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    cursor: -webkit-grab;
+}
+
+body.grabbed {
+    cursor: -webkit-grabbing;
+}
+
+canvas {
+    background: -webkit-radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%);
+    cursor: inherit;
+}
+
+body.debug-mode canvas {
+    background: -webkit-radial-gradient(center, ellipse cover, #222222 70%, #444444 100%);
+}
+
+.control {
+    position: absolute;
+    top: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    cursor: pointer;
+    text-align: center;
+    font-family: Helvetica;
+    color: white;
+    -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    -webkit-transition: all 100ms ease-out;
+}
+
+.control.debug {
+    right: 70px;
+    line-height: 49px;
+    font-size: 50px;
+    background-color: #aaa;
+}
+
+.control.debug:hover {
+    background-color: rgb(166, 187, 160);
+    -webkit-box-shadow: 0px 0px 8px rgb(182, 197, 176);
+}
+
+body.debug-mode .control.debug {
+    background-color: rgb(167, 226, 113);
+    -webkit-box-shadow: 0px 0px 8px rgb(154, 252, 135);
+}
+
+.reset {
+    right: 10px;
+    font-weight: bold;
+    line-height: 53px;
+    font-size: 35px;
+    background: #aaa;
+}
+
+.lightblue     .reset:hover { background: lightblue }
+.lightcoral    .reset:hover { background: lightcoral }
+.lightgreen    .reset:hover { background: lightgreen }
+.lightpink     .reset:hover { background: lightpink }
+.lightsalmon   .reset:hover { background: lightsalmon }
+.lightseagreen .reset:hover { background: lightseagreen }
+.lightskyblue  .reset:hover { background: lightskyblue }
+
+body.debug-mode .control.reset:hover {
+    background-color: #999;
+}
+
+.reset.animate {
+    -webkit-animation-name: rotate;
+    -webkit-animation-duration: .5s;
+    -webkit-animation-timing-function: ease-in-out;
+}
+
+@-webkit-keyframes rotate {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.gravity {
+    width: 75px;
+    height: 75px;
+    border-radius: 100px;
+    right: 30px;
+    top: 65px;
+    background-color: #aaa;
+    cursor: move;
+}
+
+body.gravity-enabled .control.gravity {
+    background-color: rgb(255, 232, 140);
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite;
+}
+
+body:not(.gravity-enabled):not(.debug-mode) .control.gravity:hover {
+    background-color: rgb(209, 205, 187);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(209, 205, 187, 0.7);
+}
+
+body.debug-mode:not(.gravity-enabled) .control.gravity:hover {
+    background-color: #999;
+}
+
+body.gravity-enabled.debug-mode .control.gravity {
+    background-color: #eee;
+    -webkit-box-shadow: 0px 0px 8px #eee;
+    -webkit-animation: none;
+}
+
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-box-shadow: 0px 0px 15px 1px rgba(255, 184, 0, 0.4);
+    }
+    50% {
+        -webkit-box-shadow: 0px 0px 15px 1px rgba(255, 184, 0, 1);
+    }
+    100% {
+        -webkit-box-shadow: 0px 0px 15px 1px rgba(255, 184, 0, 0.4);
+    }
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 11px;
+    width: 40px;
+    margin-left: -20px;
+    margin-top: -5.5px;
+    background: white;
+    border-radius: 100px;
+    -webkit-transform-origin: 50% 50%;
+    -webkit-transform: rotate(90deg);
+}
+
+.arrow::before {
+    position: absolute;
+    left: 30px;
+    top: -9px;
+    border-color: transparent transparent transparent white;
+    border-style: solid;
+    border-width: 14px;
+    width: 0;
+    height: 0;
+    content: '';
+    -webkit-transition: border-color 200ms ease-out;
+}

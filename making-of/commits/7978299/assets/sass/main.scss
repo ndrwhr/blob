@@ -1,0 +1,279 @@
+
+@import "compass/reset";
+@import "compass/css3/";
+
+$blob-colors: lightblue, lightcoral, lightgreen, lightpink, lightsalmon, lightseagreen,
+    lightskyblue, palevioletred, yellowgreen, peru;
+
+$prefixes: -webkit-, -moz-, -ms-, -o-, '';
+
+@import "controls/*.png";
+$control-button-size: 52px;
+$large-control-button-size: 76px;
+
+@mixin position-sprite($name){
+    i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: controls-sprite-width($name);
+        height: controls-sprite-height($name);
+        margin-left: - controls-sprite-width($name) / 2;
+        margin-top: - controls-sprite-height($name) / 2;
+        @include controls-sprite($name);
+    }
+}
+
+body {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    font-size: 13px;
+    font-family: Helvetica, Arial, sans-serif;
+} // body
+
+canvas {
+    width: 100%;
+    height: 100%;
+    background-color: #fefefe;
+    @include background(radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%));
+
+    @each $prefix in $prefixes {
+        cursor: #{$prefix}grab;
+    }
+
+    body.grabbed & {
+        @each $prefix in $prefixes {
+            cursor: #{$prefix}grabbing;
+        }
+    }
+}
+
+body.debug-mode canvas {
+    background-color: #222222;
+    @include background(radial-gradient(center, ellipse cover, #222222 70%, #444444 100%));
+}
+
+#about {
+    $regular-border-color: #eaeaea;
+    $regular-background-color: rgba(255, 255, 255, 0.8);
+    $regular-font-color: #777;
+    $regular-link-color: #999;
+
+    $debug-border-color: #333;
+    $debug-background-color: rgba(30, 30, 30, 0.8);
+    $debug-font-color: #fafafa;
+    $debug-link-color: white;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 250px;
+    padding: 0px 15px 25px 20px;
+    border-bottom-right-radius: 5px;
+    overflow: hidden;
+
+    border-right: 1px solid $regular-border-color;
+    border-bottom: 1px solid $regular-border-color;
+    background: $regular-background-color;
+    color: $regular-font-color;
+
+    @include transition(all 100ms ease-in-out);
+
+    body.debug-mode & {
+        border-right: 1px solid $debug-border-color;
+        border-bottom: 1px solid $debug-border-color;
+        background: $debug-background-color;
+        color: $debug-font-color;
+    }
+
+    &.closed {
+        height: 0;
+
+        > *:not(about-toggle) {
+            display: none;
+        }
+
+        .about-toggle {
+            &.hide {
+                display: none;
+            }
+            &.show {
+                display: block;
+            }
+        }
+    } // &.closed
+
+    .about-toggle.show {
+        display: none;
+    }
+
+    h1 {
+        font-weight: bold;
+        font-size: 22px;
+        margin-bottom: 13px;
+        margin-top: 10px;
+        letter-spacing: -0.05em;
+
+        a {
+            font-size: 11px;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+        }
+    } // h1
+
+    p {
+        line-height: 1.5em;
+        margin-bottom: 1.5em;
+        &.social {
+            text-align: center;
+        }
+    } // p
+
+    a {
+        color: $regular-link-color;
+        body.debug-mode & {
+            color: $debug-link-color;
+        }
+    }
+
+    a.about-toggle {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom-right-radius: 4px;
+        padding: 7px 0;
+        text-align: center;
+        text-decoration: none;
+
+        border-top: 1px solid $regular-border-color;
+        background: $regular-background-color;
+        color: #aaa;
+
+        body.debug-mode & {
+            border-top: 1px solid $debug-border-color;
+            background: $debug-background-color;
+            color: #666;
+        }
+    } // #about-toggle
+} // #about
+
+.control {
+    position: absolute;
+    top: 10px;
+    width: $control-button-size;
+    height: $control-button-size;
+    cursor: pointer;
+    background-color: #aaa;
+    @include box-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));
+    @include border-radius(25px);
+    @include transition(all 100ms ease-out);
+
+    &.debug {
+        right: 70px;
+
+        @include position-sprite(debug);
+
+        &:hover {
+            background-color: rgb(166, 187, 160);
+            @include box-shadow(0px 0px 8px rgb(182, 197, 176));
+        }
+
+        .debug-mode & {
+            background-color: rgb(167, 226, 113);
+            @include box-shadow(0px 0px 8px rgb(154, 252, 135));
+        }
+    } // &.debug
+
+    &.reset {
+        right: 10px;
+
+        @include position-sprite(reset);
+
+        @each $color in $blob-colors {
+            .#{$color} & {
+                &:hover {
+                    background-color: $color;
+                }
+            }
+        }
+
+        .debug-mode & {
+            &:hover {
+                background-color: #999;
+            }
+        }
+
+        &.animate i {
+            @each $prefix in $prefixes {
+                #{$prefix}animation: rotate .5s ease-in-out;
+            }
+        }
+    } // &.reset
+
+    &.gravity {
+        width: $large-control-button-size;
+        height: $large-control-button-size;
+        right: 30px;
+        top: 65px;
+        cursor: move;
+        background-color: #aaa;
+        @include border-radius(100px);
+        @include position-sprite(arrow);
+
+        i {
+            @include transform(rotate(90deg));
+        }
+
+        &:hover {
+            background-color: rgb(209, 205, 187);
+            @include box-shadow(0px 0px 5px 0px rgba(209, 205, 187, 0.7));
+        }
+
+        body.gravity-enabled & {
+            background-color: rgb(255, 232, 140);
+            @include box-shadow(0 0 15px 1px rgba(255, 184, 0, 0.4));
+        }
+
+        body.debug-mode & {
+            &:hover {
+                background-color: #999;
+            }
+        }
+
+        body.debug-mode.gravity-enabled & {
+            background-color: #eee;
+            @include box-shadow(0px 0px 8px #eee);
+        }
+    } // &.gravity
+} // .control
+
+@-webkit-keyframes rotate {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@-moz-keyframes rotate {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+
+@-ms-keyframes rotate {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+
+@-o-keyframes rotate {
+    from { -o-transform: rotate(0deg); }
+    to { -o-transform: rotate(360deg); }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

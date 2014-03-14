@@ -1,0 +1,449 @@
+/* line 17, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1;
+}
+
+/* line 24, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, ../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+/* line 58, controls/*.png */
+.controls-sprite, .control.debug i, .control.reset i, .control.gravity i {
+  background: url('../images/sprites/controls-sc42c517bda.png') no-repeat;
+}
+
+/* line 27, ../sass/main.scss */
+body {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 13px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+/* line 39, ../sass/main.scss */
+canvas {
+  width: 100%;
+  height: 100%;
+  background-color: #fefefe;
+  background: -webkit-gradient(radial, 50%, 0, 50%, 100, color-stop(70%, #fefefe), color-stop(100%, #eaeaea));
+  background: -webkit-radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%);
+  background: -moz-radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%);
+  background: -o-radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%);
+  background: radial-gradient(center, ellipse cover, #fefefe 70%, #eaeaea 100%);
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: -ms-grab;
+  cursor: -o-grab;
+  cursor: grab;
+}
+/* line 49, ../sass/main.scss */
+body.grabbed canvas {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: -ms-grabbing;
+  cursor: -o-grabbing;
+  cursor: grabbing;
+}
+
+/* line 56, ../sass/main.scss */
+body.debug-mode canvas {
+  background-color: #222222;
+  background: -webkit-gradient(radial, 50%, 0, 50%, 100, color-stop(70%, #222222), color-stop(100%, #444444));
+  background: -webkit-radial-gradient(center, ellipse cover, #222222 70%, #444444 100%);
+  background: -moz-radial-gradient(center, ellipse cover, #222222 70%, #444444 100%);
+  background: -o-radial-gradient(center, ellipse cover, #222222 70%, #444444 100%);
+  background: radial-gradient(center, ellipse cover, #222222 70%, #444444 100%);
+}
+
+/* line 61, ../sass/main.scss */
+#about {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
+  padding: 0px 15px 25px 20px;
+  border-bottom-right-radius: 5px;
+  overflow: hidden;
+  border-right: 1px solid #eaeaea;
+  border-bottom: 1px solid #eaeaea;
+  background: rgba(255, 255, 255, 0.8);
+  color: #777777;
+  -webkit-transition: all 100ms ease-in-out;
+  -moz-transition: all 100ms ease-in-out;
+  -o-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
+}
+/* line 87, ../sass/main.scss */
+body.debug-mode #about {
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  background: rgba(30, 30, 30, 0.8);
+  color: #fafafa;
+}
+/* line 94, ../sass/main.scss */
+#about.closed {
+  height: 0;
+}
+/* line 97, ../sass/main.scss */
+#about.closed > *:not(about-toggle) {
+  display: none;
+}
+/* line 102, ../sass/main.scss */
+#about.closed .about-toggle.hide {
+  display: none;
+}
+/* line 105, ../sass/main.scss */
+#about.closed .about-toggle.show {
+  display: block;
+}
+/* line 111, ../sass/main.scss */
+#about .about-toggle.show {
+  display: none;
+}
+/* line 115, ../sass/main.scss */
+#about h1 {
+  font-weight: bold;
+  font-size: 22px;
+  margin-bottom: 13px;
+  margin-top: 10px;
+  letter-spacing: -0.05em;
+}
+/* line 122, ../sass/main.scss */
+#about h1 a {
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 0.05em;
+}
+/* line 129, ../sass/main.scss */
+#about p {
+  line-height: 1.5em;
+  margin-bottom: 1.5em;
+}
+/* line 132, ../sass/main.scss */
+#about p.social {
+  text-align: center;
+}
+/* line 137, ../sass/main.scss */
+#about a {
+  color: #999999;
+}
+/* line 139, ../sass/main.scss */
+body.debug-mode #about a {
+  color: white;
+}
+/* line 144, ../sass/main.scss */
+#about a.about-toggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-bottom-right-radius: 4px;
+  padding: 7px 0;
+  text-align: center;
+  text-decoration: none;
+  border-top: 1px solid #eaeaea;
+  background: rgba(255, 255, 255, 0.8);
+  color: #aaa;
+}
+/* line 158, ../sass/main.scss */
+body.debug-mode #about a.about-toggle {
+  border-top: 1px solid #333333;
+  background: rgba(30, 30, 30, 0.8);
+  color: #666;
+}
+
+/* line 166, ../sass/main.scss */
+.control {
+  position: absolute;
+  top: 10px;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  background-color: #aaa;
+  -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+  border-radius: 25px;
+  -webkit-transition: all 100ms ease-out;
+  -moz-transition: all 100ms ease-out;
+  -o-transition: all 100ms ease-out;
+  transition: all 100ms ease-out;
+}
+/* line 177, ../sass/main.scss */
+.control.debug {
+  right: 70px;
+}
+/* line 15, ../sass/main.scss */
+.control.debug i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  background-position: 0 0;
+}
+/* line 182, ../sass/main.scss */
+.control.debug:hover {
+  background-color: #a6bba0;
+  -webkit-box-shadow: 0px 0px 8px #b6c5b0;
+  -moz-box-shadow: 0px 0px 8px #b6c5b0;
+  box-shadow: 0px 0px 8px #b6c5b0;
+}
+/* line 187, ../sass/main.scss */
+.debug-mode .control.debug {
+  background-color: #a7e271;
+  -webkit-box-shadow: 0px 0px 8px #9afc87;
+  -moz-box-shadow: 0px 0px 8px #9afc87;
+  box-shadow: 0px 0px 8px #9afc87;
+}
+/* line 193, ../sass/main.scss */
+.control.reset {
+  right: 10px;
+}
+/* line 15, ../sass/main.scss */
+.control.reset i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+  margin-top: -14px;
+  background-position: 0 -34px;
+}
+/* line 200, ../sass/main.scss */
+.lightblue .control.reset:hover {
+  background-color: lightblue;
+}
+/* line 200, ../sass/main.scss */
+.lightcoral .control.reset:hover {
+  background-color: lightcoral;
+}
+/* line 200, ../sass/main.scss */
+.lightgreen .control.reset:hover {
+  background-color: lightgreen;
+}
+/* line 200, ../sass/main.scss */
+.lightpink .control.reset:hover {
+  background-color: lightpink;
+}
+/* line 200, ../sass/main.scss */
+.lightsalmon .control.reset:hover {
+  background-color: lightsalmon;
+}
+/* line 200, ../sass/main.scss */
+.lightseagreen .control.reset:hover {
+  background-color: lightseagreen;
+}
+/* line 200, ../sass/main.scss */
+.lightskyblue .control.reset:hover {
+  background-color: lightskyblue;
+}
+/* line 200, ../sass/main.scss */
+.palevioletred .control.reset:hover {
+  background-color: palevioletred;
+}
+/* line 200, ../sass/main.scss */
+.yellowgreen .control.reset:hover {
+  background-color: yellowgreen;
+}
+/* line 200, ../sass/main.scss */
+.peru .control.reset:hover {
+  background-color: peru;
+}
+/* line 207, ../sass/main.scss */
+.debug-mode .control.reset:hover {
+  background-color: #999;
+}
+/* line 212, ../sass/main.scss */
+.control.reset.animate i {
+  -webkit-animation: rotate .5s ease-in-out;
+  -moz-animation: rotate .5s ease-in-out;
+  -ms-animation: rotate .5s ease-in-out;
+  -o-animation: rotate .5s ease-in-out;
+  animation: rotate .5s ease-in-out;
+}
+/* line 219, ../sass/main.scss */
+.control.gravity {
+  width: 76px;
+  height: 76px;
+  right: 30px;
+  top: 65px;
+  cursor: move;
+  background-color: #aaa;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
+  border-radius: 100px;
+}
+/* line 15, ../sass/main.scss */
+.control.gravity i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 45px;
+  height: 27px;
+  margin-left: -22.5px;
+  margin-top: -13.5px;
+  background-position: 0 -62px;
+}
+/* line 229, ../sass/main.scss */
+.control.gravity i {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+/* line 233, ../sass/main.scss */
+.control.gravity:hover {
+  background-color: #d1cdbb;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(209, 205, 187, 0.7);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(209, 205, 187, 0.7);
+  box-shadow: 0px 0px 5px 0px rgba(209, 205, 187, 0.7);
+}
+/* line 238, ../sass/main.scss */
+body.gravity-enabled .control.gravity {
+  background-color: #ffe88c;
+  -webkit-box-shadow: 0 0 15px 1px rgba(255, 184, 0, 0.4);
+  -moz-box-shadow: 0 0 15px 1px rgba(255, 184, 0, 0.4);
+  box-shadow: 0 0 15px 1px rgba(255, 184, 0, 0.4);
+}
+/* line 244, ../sass/main.scss */
+body.debug-mode .control.gravity:hover {
+  background-color: #999;
+}
+/* line 249, ../sass/main.scss */
+body.debug-mode.gravity-enabled .control.gravity {
+  background-color: #eee;
+  -webkit-box-shadow: 0px 0px 8px #eeeeee;
+  -moz-box-shadow: 0px 0px 8px #eeeeee;
+  box-shadow: 0px 0px 8px #eeeeee;
+}
+
+@-webkit-keyframes rotate {
+  /* line 257, ../sass/main.scss */
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  /* line 258, ../sass/main.scss */
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes rotate {
+  /* line 262, ../sass/main.scss */
+  from {
+    -moz-transform: rotate(0deg);
+  }
+
+  /* line 263, ../sass/main.scss */
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-ms-keyframes rotate {
+  /* line 267, ../sass/main.scss */
+  from {
+    -ms-transform: rotate(0deg);
+  }
+
+  /* line 268, ../sass/main.scss */
+  to {
+    -ms-transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes rotate {
+  /* line 272, ../sass/main.scss */
+  from {
+    -o-transform: rotate(0deg);
+  }
+
+  /* line 273, ../sass/main.scss */
+  to {
+    -o-transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate {
+  /* line 277, ../sass/main.scss */
+  from {
+    transform: rotate(0deg);
+  }
+
+  /* line 278, ../sass/main.scss */
+  to {
+    transform: rotate(360deg);
+  }
+}

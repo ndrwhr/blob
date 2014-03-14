@@ -1,0 +1,214 @@
+@import "compass/reset";
+@import "compass/css3/";
+
+$git-colors: lightblue, lightcoral, lightgreen, lightpink, lightsalmon, lightseagreen,
+    lightskyblue, palevioletred, yellowgreen, peru;
+
+$background-color: #fafafa;
+$shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.1);
+
+body, html {
+    height: 100%;
+}
+
+body {
+    font-family: helvetica;
+    font-size: 13px;
+    background-color: $background-color;
+    color: #777;
+}
+
+.content {
+    padding-right: 25px;
+    max-width: 850px;
+    min-width: 650px;
+    margin: 0 auto;
+}
+
+p {
+    margin: 0 0 0.75em;
+    line-height: 1.6em;
+    text-align: justify;
+}
+
+a, a:visited {
+    color: inherit;
+}
+
+b {
+    font-weight: bold;
+}
+
+h1, h2, h3 {
+    font-family: helvetica;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+    color: black;
+}
+
+footer {
+    color: white;
+    padding: 25px;
+    line-height: 21px;
+    text-align: right;
+
+    p {
+        float: left;
+        color: white;
+        margin: 6px 15px 0 0;
+    }
+
+    iframe {
+        display: inline-block;
+        padding-top: 5px;
+    }
+
+    @each $color in $git-colors {
+        body.#{$color} & {
+            background-color: $color;
+        }
+    }
+}
+
+header {
+    padding: 25px;
+    margin-bottom: 50px;
+    color: white;
+    @include box-shadow($shadow);
+
+    h1, p {
+        margin: 0 25px 0 75px;
+    }
+
+    h1 {
+        font-size: 3.8em;
+        margin: 0;
+        color: white;
+        text-align: center;
+    } // h1
+
+    p {
+        margin-top: 12px;
+    }
+
+    @each $color in $git-colors {
+        body.#{$color} & {
+            background-color: $color;
+        }
+    }
+} // header
+
+.revisions {
+    margin-left: 25px;
+
+    .revision-wrapper {
+        $tree-width: 4px;
+        $dot-width: 23px;
+
+        position: relative;
+        padding-bottom: 25px;
+        border-left: $tree-width solid nth($git-colors, 1);
+
+        @each $color in $git-colors {
+            body.#{$color} & {
+                border-color: $color;
+            }
+        }
+
+        &::after {
+            position: absolute;
+            top: 0;
+            left: -($dot-width / 2) - ($tree-width / 2);
+            width: $dot-width;
+            height: $dot-width;
+            content: ' ';
+            background: $background-color;
+            border: ($tree-width * 0.75) solid nth($git-colors, 1);
+            @include border-radius(100px);
+            @include box-sizing(border-box);
+
+            @each $color in $git-colors {
+                body.#{$color} & {
+                    border-color: $color;
+                }
+            }
+        } // &::after
+
+
+    } // .revisions-wrapper
+
+    .revision {
+        position: relative;
+        padding: 25px;
+        margin-left: 25px;
+        background: white;
+        @include border-radius(5px);
+        @include border-top-left-radius(0px);
+        @include box-shadow($shadow);
+
+        .blob-container {
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+            background: $background-color url('../images/loading.gif') no-repeat center center;
+            border: 1px solid #ccc;
+            margin: 0 0 15px;
+
+            iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+                opacity: 0;
+                @include transition(opacity 250ms ease-in);
+
+                &.loaded {
+                    opacity: 1;
+                }
+            }
+        } // .blob-container
+
+        h2 {
+            font-size: 1.4em;
+            margin-bottom: 0.8em;
+        }
+
+        h3 {
+            color: #999;
+            font-size: 0.9em;
+            font-weight: normal;
+            text-align: right;
+
+            a, a:visited {
+                color: inherit;
+            }
+        }
+
+        ul {
+            margin: 15px 0 10px;
+
+            li {
+                list-style-type: disc;
+                margin-left: 2.5em;
+                padding: 0 0 1em;
+                line-height: 1.6em;
+            }
+        } // ul
+
+
+        &::after, &::before {
+            position: absolute;
+            top: 4px;
+            left: -8px;
+            width: 15px;
+            height: 15px;
+            content: ' ';
+            background: white;
+            @include transform(rotate(45deg));
+        } // &::after
+
+        &::before {
+            z-index: -1;
+            @include box-shadow($shadow);
+        } // &::after
+    } // .revision
+} // .revisions

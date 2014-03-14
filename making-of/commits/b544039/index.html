@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>EEEEYYYESSS</title>
+
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        overflow: hidden;
+    }
+    </style>
+
+    <script type="text/javascript" src="lib/gl-matrix-min.js"></script>
+    <script type="text/javascript" src="lib/patches.js"></script>
+    <script type="text/javascript" src="source/point.js"></script>
+    <script type="text/javascript" src="source/constraint.js"></script>
+    <script type="text/javascript" src="source/world.js"></script>
+    <script type="text/javascript" src="source/eye.js"></script>
+    <script type="text/javascript" src="source/blob.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+
+var canvas = document.createElement('canvas');
+var context = canvas.getContext('2d');
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+document.body.appendChild(canvas);
+
+var world = new World({});
+var blob = new Blob({
+    world: world
+});
+
+(function step(){
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    world.step();
+
+    world.draw(context);
+
+    blob.draw(context);
+
+    requestAnimationFrame(step);
+    // setTimeout(step, 100);
+})();
+
+document.body.style.backgroundColor = (function(){
+    var colors = [
+        'lightblue',
+        'lightcoral',
+        'lightcyan',
+        'lightgoldenrodyellow',
+        'lightgray',
+        'lightgreen',
+        'lightpink',
+        'lightsalmon',
+        'lightseagreen',
+        'lightskyblue',
+        'lightslategray',
+        'lightsteelblue',
+        'lightyellow'
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+})();
+
+</script>
+</body>
+</html>
